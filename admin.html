@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aromantic — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --negro: #0a0a0a;
+    --negro-2: #111111;
+    --negro-3: #1a1a1a;
+    --dorado: #C9A84C;
+    --dorado-tenue: rgba(201,168,76,0.12);
+    --blanco: #f5f5f0;
+    --gris: rgba(255,255,255,0.5);
+    --error: #e05555;
+    --exito: #4caf77;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Montserrat", sans-serif; background: var(--negro); color: var(--blanco); min-height: 100vh; }
+
+  /* LOGIN */
+  #pantalla-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid rgba(201,168,76,0.2);
+    background: var(--negro-2);
+    padding: 48px 40px;
+  }
+
+  .login-logo {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--dorado);
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .login-sub {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: var(--dorado);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .campo label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+  }
+
+  .campo input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--blanco);
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+    border-radius: 2px;
+  }
+
+  .campo input:focus { border-color: var(--dorado); }
+
+  .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: var(--dorado);
+    border: none;
+    color: var(--negro);
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+    border-radius: 2px;
+  }
+
+  .btn-login:hover { opacity: 0.85; }
+
+  .login-error {
+    color: var(--error);
+    font-size: 11px;
+    text-align: center;
+    margin-top: 12px;
+    min-height: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ADMIN PANEL */
+  #pantalla-admin { display: none; }
+
+  .topbar {
+    background: var(--negro-2);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-logo {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    color: var(--dorado);
+    letter-spacing: 2px;
+    margin-right: auto;
+  }
+
+  .topbar-user {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+  }
+
+  .btn-logout {
+    padding: 7px 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .btn-logout:hover { border-color: var(--error); color: var(--error); }
+
+  .admin-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--negro-3);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--blanco);
+    padding: 12px 24px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    white-space: nowrap;
+    border-radius: 2px;
+  }
+
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  #toast.error { border-color: var(--error); color: var(--error); }
+  #toast.ok { border-color: var(--exito); color: var(--exito); }
+
+  /* SECCIÓN FORMULARIO */
+  .seccion-titulo {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--dorado);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .seccion-titulo::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
+  }
+
+  .form-card {
+    background: var(--negro-2);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 32px;
+    margin-bottom: 40px;
+    border-radius: 2px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-campo.full { grid-column: 1 / -1; }
+
+  .form-campo label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .form-campo input,
+  .form-campo select,
+  .form-campo textarea {
+    padding: 11px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--blanco);
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    border-radius: 2px;
+  }
+
+  .form-campo input:focus,
+  .form-campo select:focus,
+  .form-campo textarea:focus { border-color: var(--dorado); }
+
+  .form-campo select option { background: #1a1a1a; }
+  .form-campo textarea { resize: vertical; min-height: 80px; }
+
+  .precios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    grid-column: 1 / -1;
+  }
+
+  .precio-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .precio-campo label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dorado);
+    opacity: 0.7;
+  }
+
+  .precio-campo input {
+    padding: 10px 14px;
+    background: var(--dorado-tenue);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--blanco);
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    outline: none;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .precio-campo input:focus { border-color: var(--dorado); }
+
+  /* FOTO UPLOAD */
+  .foto-upload {
+    grid-column: 1 / -1;
+    border: 1px dashed rgba(201,168,76,0.25);
+    border-radius: 2px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .foto-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 2px;
+    display: none;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .foto-placeholder {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .foto-info { flex: 1; }
+  .foto-info p { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 10px; letter-spacing: 0.3px; line-height: 1.6; }
+
+  .btn-upload {
+    padding: 9px 20px;
+    border: 1px solid rgba(201,168,76,0.4);
+    background: transparent;
+    color: var(--dorado);
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .btn-upload:hover { background: var(--dorado-tenue); }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .btn-guardar {
+    padding: 12px 32px;
+    background: var(--dorado);
+    border: none;
+    color: var(--negro);
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    border-radius: 2px;
+  }
+
+  .btn-guardar:hover { opacity: 0.85; }
+  .btn-guardar:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-cancelar {
+    padding: 12px 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-cancelar:hover { border-color: rgba(255,255,255,0.3); color: var(--blanco); }
+
+  /* TABLA */
+  .tabla-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  th {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-weight: 500;
+  }
+
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.7);
+    vertical-align: middle;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .td-foto {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .td-nombre { font-family: "Cormorant Garamond", serif; font-size: 16px; color: var(--blanco); }
+  .td-marca { font-size: 10px; letter-spacing: 1px; color: var(--dorado); }
+
+  .badge-small {
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 1px;
+    text-transform: uppercase;
+  }
+
+  .badge-activo { background: rgba(76,175,119,0.15); border: 1px solid rgba(76,175,119,0.3); color: #4caf77; }
+  .badge-inactivo { background: rgba(224,85,85,0.1); border: 1px solid rgba(224,85,85,0.2); color: #e05555; }
+
+  .acciones { display: flex; gap: 8px; }
+
+  .btn-editar {
+    padding: 6px 14px;
+    border: 1px solid rgba(201,168,76,0.3);
+    background: transparent;
+    color: var(--dorado);
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .btn-editar:hover { background: var(--dorado-tenue); }
+
+  .btn-toggle {
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .btn-toggle:hover { border-color: var(--error); color: var(--error); }
+
+  .btn-nuevo {
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid var(--dorado);
+    color: var(--dorado);
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+    margin-bottom: 32px;
+  }
+
+  .btn-nuevo:hover { background: var(--dorado-tenue); }
+
+  .empty-tabla {
+    text-align: center;
+    padding: 48px;
+    color: rgba(255,255,255,0.2);
+    font-style: italic;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .precios-grid { grid-template-columns: 1fr; }
+    .form-campo.full { grid-column: 1; }
+    .foto-upload { flex-direction: column; }
+    .login-box { padding: 32px 24px; }
+    .admin-body { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div id="pantalla-login">
+  <div class="login-box">
+    <div class="login-logo">AR</div>
+    <div class="login-sub">Panel Administrador</div>
+    <div class="campo">
+      <label>Correo</label>
+      <input type="email" id="login-email" placeholder="correo@ejemplo.com"/>
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')iniciarSesion()"/>
+    </div>
+    <button class="btn-login" onclick="iniciarSesion()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="pantalla-admin">
+  <div class="topbar">
+    <span class="topbar-logo">AR · Admin</span>
+    <span class="topbar-user" id="user-email"></span>
+    <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- FORMULARIO -->
+    <div id="seccion-form" style="display:none">
+      <div class="seccion-titulo" id="form-titulo">Nuevo perfume</div>
+      <div class="form-card">
+        <input type="hidden" id="f-id"/>
+        <div class="form-grid">
+          <div class="form-campo">
+            <label>Marca *</label>
+            <input type="text" id="f-marca" placeholder="Ej. Dior, Montblanc..."/>
+          </div>
+          <div class="form-campo">
+            <label>Nombre del perfume *</label>
+            <input type="text" id="f-nombre" placeholder="Ej. Sauvage, Legend Spirit..."/>
+          </div>
+          <div class="form-campo">
+            <label>Familia olfativa</label>
+            <input type="text" id="f-familia" placeholder="Ej. Amaderado, Fresco, Oriental..."/>
+          </div>
+          <div class="form-campo">
+            <label>Género</label>
+            <select id="f-genero">
+              <option value="hombre">Hombre</option>
+              <option value="mujer">Mujer</option>
+              <option value="unisex">Unisex</option>
+            </select>
+          </div>
+          <div class="form-campo">
+            <label>Temporada</label>
+            <select id="f-temporada">
+              <option value="todo el año">Todo el año</option>
+              <option value="frio">Frío ❄️</option>
+              <option value="calor">Calor ☀️</option>
+            </select>
+          </div>
+          <div class="form-campo full">
+            <label>Descripción</label>
+            <textarea id="f-desc" placeholder="Breve descripción del aroma, notas principales..."></textarea>
+          </div>
+
+          <!-- PRECIOS -->
+          <div class="precios-grid">
+            <div class="precio-campo">
+              <label>Precio 3ml ($)</label>
+              <input type="number" id="f-precio-3" placeholder="40" min="0" step="1"/>
+            </div>
+            <div class="precio-campo">
+              <label>Precio 5ml ($)</label>
+              <input type="number" id="f-precio-5" placeholder="70" min="0" step="1"/>
+            </div>
+            <div class="precio-campo">
+              <label>Precio 10ml ($)</label>
+              <input type="number" id="f-precio-10" placeholder="140" min="0" step="1"/>
+            </div>
+          </div>
+
+          <!-- FOTO -->
+          <div class="foto-upload">
+            <div class="foto-placeholder" id="foto-placeholder">🌿</div>
+            <img class="foto-preview" id="foto-preview" alt="preview"/>
+            <div class="foto-info">
+              <p>Sube la foto del perfume. Recomendado: cuadrada, mínimo 400×400px.</p>
+              <input type="file" id="f-foto" accept="image/*" style="display:none" onchange="previsualizarFoto(this)"/>
+              <button class="btn-upload" onclick="document.getElementById('f-foto').click()">Elegir foto</button>
+              <span id="foto-nombre" style="font-size:10px;color:rgba(255,255,255,0.3);margin-left:12px;"></span>
+            </div>
+          </div>
+
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancelar" onclick="cancelarForm()">Cancelar</button>
+          <button class="btn-guardar" id="btn-guardar" onclick="guardar()">Guardar perfume</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTA -->
+    <div id="seccion-lista">
+      <div class="seccion-titulo">Perfumes en catálogo</div>
+      <button class="btn-nuevo" onclick="mostrarForm()">+ Agregar perfume</button>
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Perfume</th>
+              <th>Género</th>
+              <th>Temporada</th>
+              <th>3ml</th>
+              <th>5ml</th>
+              <th>10ml</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <tr><td colspan="9" class="empty-tabla">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://kgrwrordxxuzwuiuwdog.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtncndyb3JkeHh1end1aXV3ZG9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjA1ODQsImV4cCI6MjA5MTU5NjU4NH0.5i8WzMx-CUwSypRZq5V9fQDoc0KnYh-UGKSRcXvhkDs";
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let todosLosProductos = [];
+let todosLosPrecios = [];
+
+// ── AUTH ──
+async function iniciarSesion() {
+  const email = document.getElementById("login-email").value.trim();
+  const pass = document.getElementById("login-pass").value;
+  document.getElementById("login-error").textContent = "";
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    document.getElementById("login-error").textContent = "Correo o contraseña incorrectos.";
+    return;
+  }
+  mostrarAdmin(data.user.email);
+}
+
+async function cerrarSesion() {
+  await db.auth.signOut();
+  document.getElementById("pantalla-admin").style.display = "none";
+  document.getElementById("pantalla-login").style.display = "flex";
+}
+
+function mostrarAdmin(email) {
+  document.getElementById("pantalla-login").style.display = "none";
+  document.getElementById("pantalla-admin").style.display = "block";
+  document.getElementById("user-email").textContent = email;
+  cargarTabla();
+}
+
+// Check session on load
+db.auth.getSession().then(({ data }) => {
+  if (data?.session?.user) mostrarAdmin(data.session.user.email);
+});
+
+// ── TABLA ──
+async function cargarTabla() {
+  const { data: perfumes } = await db.from("perfumes").select("*").order("marca");
+  const { data: precios } = await db.from("precios").select("*");
+  todosLosProductos = perfumes || [];
+  todosLosPrecios = precios || [];
+  renderTabla();
+}
+
+function renderTabla() {
+  const tbody = document.getElementById("tabla-body");
+
+  if (todosLosProductos.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-tabla">Aún no hay perfumes · Agrega el primero</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = todosLosProductos.map(p => {
+    const pp = todosLosPrecios.filter(pr => pr.perfume_id === p.id);
+    const p3 = pp.find(pr => pr.tamano === "3ml");
+    const p5 = pp.find(pr => pr.tamano === "5ml");
+    const p10 = pp.find(pr => pr.tamano === "10ml");
+
+    const fotoHtml = p.foto_url
+      ? `<img src="${p.foto_url}" class="td-foto" alt="${p.nombre}"/>`
+      : `<span style="font-size:24px">🌿</span>`;
+
+    const tempEmoji = p.temporada === "frio" ? "❄️" : p.temporada === "calor" ? "☀️" : "✦";
+
+    return `
+      <tr>
+        <td>${fotoHtml}</td>
+        <td>
+          <div class="td-nombre">${p.nombre}</div>
+          <div class="td-marca">${p.marca}</div>
+        </td>
+        <td style="text-transform:capitalize">${p.genero || "—"}</td>
+        <td>${tempEmoji} ${p.temporada || "—"}</td>
+        <td>${p3 ? "$" + parseFloat(p3.precio).toFixed(0) : "—"}</td>
+        <td>${p5 ? "$" + parseFloat(p5.precio).toFixed(0) : "—"}</td>
+        <td>${p10 ? "$" + parseFloat(p10.precio).toFixed(0) : "—"}</td>
+        <td><span class="badge-small ${p.activo ? 'badge-activo' : 'badge-inactivo'}">${p.activo ? "Activo" : "Oculto"}</span></td>
+        <td>
+          <div class="acciones">
+            <button class="btn-editar" onclick="editarProducto('${p.id}')">Editar</button>
+            <button class="btn-toggle" onclick="toggleActivo('${p.id}', ${p.activo})">${p.activo ? "Ocultar" : "Activar"}</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+// ── FORM ──
+function mostrarForm(id = null) {
+  document.getElementById("seccion-form").style.display = "block";
+  document.getElementById("seccion-lista").style.display = "none";
+  limpiarForm();
+
+  if (id) {
+    const p = todosLosProductos.find(x => x.id === id);
+    const pp = todosLosPrecios.filter(pr => pr.perfume_id === id);
+    const p3 = pp.find(pr => pr.tamano === "3ml");
+    const p5 = pp.find(pr => pr.tamano === "5ml");
+    const p10 = pp.find(pr => pr.tamano === "10ml");
+
+    document.getElementById("form-titulo").textContent = "Editar perfume";
+    document.getElementById("f-id").value = p.id;
+    document.getElementById("f-marca").value = p.marca || "";
+    document.getElementById("f-nombre").value = p.nombre || "";
+    document.getElementById("f-familia").value = p.familia_olfativa || "";
+    document.getElementById("f-genero").value = p.genero || "hombre";
+    document.getElementById("f-temporada").value = p.temporada || "todo el año";
+    document.getElementById("f-desc").value = p.descripcion || "";
+    if (p3) document.getElementById("f-precio-3").value = p3.precio;
+    if (p5) document.getElementById("f-precio-5").value = p5.precio;
+    if (p10) document.getElementById("f-precio-10").value = p10.precio;
+
+    if (p.foto_url) {
+      document.getElementById("foto-placeholder").style.display = "none";
+      const prev = document.getElementById("foto-preview");
+      prev.src = p.foto_url;
+      prev.style.display = "block";
+    }
+  } else {
+    document.getElementById("form-titulo").textContent = "Nuevo perfume";
+  }
+}
+
+function cancelarForm() {
+  document.getElementById("seccion-form").style.display = "none";
+  document.getElementById("seccion-lista").style.display = "block";
+}
+
+function limpiarForm() {
+  ["f-id","f-marca","f-nombre","f-familia","f-desc","f-precio-3","f-precio-5","f-precio-10"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  document.getElementById("f-genero").value = "hombre";
+  document.getElementById("f-temporada").value = "todo el año";
+  document.getElementById("foto-placeholder").style.display = "flex";
+  document.getElementById("foto-preview").style.display = "none";
+  document.getElementById("foto-nombre").textContent = "";
+  document.getElementById("f-foto").value = "";
+}
+
+function editarProducto(id) {
+  mostrarForm(id);
+  document.getElementById("seccion-form").scrollIntoView({ behavior: "smooth" });
+}
+
+function previsualizarFoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById("foto-nombre").textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById("foto-placeholder").style.display = "none";
+    const prev = document.getElementById("foto-preview");
+    prev.src = e.target.result;
+    prev.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+}
+
+async function guardar() {
+  const id = document.getElementById("f-id").value;
+  const marca = document.getElementById("f-marca").value.trim();
+  const nombre = document.getElementById("f-nombre").value.trim();
+
+  if (!marca || !nombre) { toast("Marca y nombre son obligatorios", "error"); return; }
+
+  const btn = document.getElementById("btn-guardar");
+  btn.disabled = true;
+  btn.textContent = "Guardando...";
+
+  // Subir foto si hay
+  let foto_url = null;
+  const fotoFile = document.getElementById("f-foto").files[0];
+
+  if (fotoFile) {
+    const ext = fotoFile.name.split(".").pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error: uploadError } = await db.storage
+      .from("fotos-perfumes")
+      .upload(path, fotoFile, { upsert: true });
+
+    if (!uploadError) {
+      const { data: urlData } = db.storage.from("fotos-perfumes").getPublicUrl(path);
+      foto_url = urlData.publicUrl;
+    }
+  }
+
+  const datos = {
+    marca,
+    nombre,
+    familia_olfativa: document.getElementById("f-familia").value.trim() || null,
+    genero: document.getElementById("f-genero").value,
+    temporada: document.getElementById("f-temporada").value,
+    descripcion: document.getElementById("f-desc").value.trim() || null,
+  };
+
+  if (foto_url) datos.foto_url = foto_url;
+
+  let perfumeId = id;
+
+  if (id) {
+    await db.from("perfumes").update(datos).eq("id", id);
+  } else {
+    const { data } = await db.from("perfumes").insert({ ...datos, activo: true }).select().single();
+    perfumeId = data.id;
+  }
+
+  // Guardar precios
+  const tamanos = [
+    { tamano: "3ml", val: document.getElementById("f-precio-3").value },
+    { tamano: "5ml", val: document.getElementById("f-precio-5").value },
+    { tamano: "10ml", val: document.getElementById("f-precio-10").value },
+  ];
+
+  for (const t of tamanos) {
+    if (!t.val) continue;
+    const existe = todosLosPrecios.find(p => p.perfume_id === perfumeId && p.tamano === t.tamano);
+    if (existe) {
+      await db.from("precios").update({ precio: parseFloat(t.val) }).eq("id", existe.id);
+    } else {
+      await db.from("precios").insert({ perfume_id: perfumeId, tamano: t.tamano, precio: parseFloat(t.val), disponible: true });
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Guardar perfume";
+  toast("Perfume guardado correctamente", "ok");
+  cancelarForm();
+  cargarTabla();
+}
+
+async function toggleActivo(id, activo) {
+  await db.from("perfumes").update({ activo: !activo }).eq("id", id);
+  await cargarTabla();
+  toast(!activo ? "Perfume activado" : "Perfume ocultado", "ok");
+}
+
+// ── TOAST ──
+function toast(msg, tipo = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = tipo ? `show ${tipo}` : "show";
+  setTimeout(() => { t.className = tipo; }, 3000);
+}
+</script>
+</body>
+</html>
