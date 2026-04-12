@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Aromantic — Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<title>Aromantic — Decants de Perfume</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
@@ -12,629 +12,530 @@
     --negro-2: #111111;
     --negro-3: #1a1a1a;
     --dorado: #C9A84C;
-    --dorado-tenue: rgba(201,168,76,0.12);
+    --dorado-claro: #E8C97A;
+    --dorado-tenue: rgba(201,168,76,0.15);
     --blanco: #f5f5f0;
     --gris: rgba(255,255,255,0.5);
-    --error: #e05555;
-    --exito: #4caf77;
+    --gris-tenue: rgba(255,255,255,0.08);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: "Montserrat", sans-serif; background: var(--negro); color: var(--blanco); min-height: 100vh; }
 
-  /* LOGIN */
-  #pantalla-login {
+  body {
+    font-family: "Montserrat", sans-serif;
+    background: var(--negro);
+    color: var(--blanco);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    background: radial-gradient(ellipse at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    background: radial-gradient(ellipse at 50% 60%, rgba(201,168,76,0.08) 0%, transparent 70%);
   }
 
-  .login-box {
-    width: 100%;
-    max-width: 380px;
-    border: 1px solid rgba(201,168,76,0.2);
-    background: var(--negro-2);
-    padding: 48px 40px;
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--dorado), transparent);
   }
 
-  .login-logo {
+  .logo-ar {
     font-family: "Cormorant Garamond", serif;
-    font-size: 52px;
+    font-size: clamp(80px, 18vw, 160px);
     font-weight: 300;
+    letter-spacing: -4px;
     color: transparent;
     -webkit-text-stroke: 1px var(--dorado);
-    text-align: center;
-    line-height: 1;
-    margin-bottom: 4px;
+    line-height: 0.85;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.2s forwards;
   }
 
-  .login-sub {
-    text-align: center;
-    font-size: 9px;
-    letter-spacing: 5px;
+  .logo-sub {
+    font-family: "Montserrat", sans-serif;
+    font-size: clamp(10px, 2vw, 13px);
+    font-weight: 400;
+    letter-spacing: 8px;
     color: var(--dorado);
     text-transform: uppercase;
-    margin-bottom: 40px;
-  }
-
-  .campo label {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 8px;
-  }
-
-  .campo input {
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--blanco);
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 16px;
-    border-radius: 2px;
-  }
-
-  .campo input:focus { border-color: var(--dorado); }
-
-  .btn-login {
-    width: 100%;
-    padding: 14px;
-    background: var(--dorado);
-    border: none;
-    color: var(--negro);
-    font-family: "Montserrat", sans-serif;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    margin-top: 8px;
-    border-radius: 2px;
-  }
-
-  .btn-login:hover { opacity: 0.85; }
-
-  .login-error {
-    color: var(--error);
-    font-size: 11px;
-    text-align: center;
     margin-top: 12px;
-    min-height: 16px;
-    letter-spacing: 0.5px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.5s forwards;
   }
 
-  /* ADMIN PANEL */
-  #pantalla-admin { display: none; }
+  .hero-tagline {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(14px, 3vw, 18px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gris);
+    margin-top: 32px;
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.8s forwards;
+  }
 
-  .topbar {
-    background: var(--negro-2);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-    padding: 16px 24px;
+  .hero-scroll {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 1.2s forwards;
+  }
+
+  .hero-scroll span {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--dorado);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--dorado), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* NAV */
+  .nav {
     position: sticky;
     top: 0;
     z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    padding: 16px 24px;
   }
 
-  .topbar-logo {
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .nav-logo {
     font-family: "Cormorant Garamond", serif;
     font-size: 22px;
+    font-weight: 300;
     color: var(--dorado);
     letter-spacing: 2px;
     margin-right: auto;
   }
 
-  .topbar-user {
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 1px;
+  .search-box {
+    position: relative;
   }
 
-  .btn-logout {
+  .search-box input {
+    background: var(--gris-tenue);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 2px;
+    padding: 8px 16px 8px 36px;
+    color: var(--blanco);
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.2s, width 0.3s;
+  }
+
+  .search-box input:focus { border-color: var(--dorado); width: 240px; }
+  .search-box input::placeholder { color: rgba(255,255,255,0.3); }
+
+  .search-box svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .filtro-btn {
     padding: 7px 16px;
+    border-radius: 2px;
     border: 1px solid rgba(255,255,255,0.1);
     background: transparent;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.5);
     font-family: "Montserrat", sans-serif;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s;
-    border-radius: 2px;
+    white-space: nowrap;
   }
 
-  .btn-logout:hover { border-color: var(--error); color: var(--error); }
+  .filtro-btn:hover { border-color: var(--dorado); color: var(--dorado); }
+  .filtro-btn.active { background: var(--dorado); border-color: var(--dorado); color: var(--negro); font-weight: 600; }
 
-  .admin-body {
+  /* MAIN CONTENT */
+  .catalogo {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 40px 24px 80px;
+    padding: 60px 24px 80px;
   }
 
-  /* TOAST */
-  #toast {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--negro-3);
-    border: 1px solid rgba(201,168,76,0.3);
-    color: var(--blanco);
-    padding: 12px 24px;
-    font-size: 12px;
-    letter-spacing: 1px;
-    transition: transform 0.3s ease;
-    z-index: 999;
-    white-space: nowrap;
-    border-radius: 2px;
-  }
-
-  #toast.show { transform: translateX(-50%) translateY(0); }
-  #toast.error { border-color: var(--error); color: var(--error); }
-  #toast.ok { border-color: var(--exito); color: var(--exito); }
-
-  /* SECCIÓN FORMULARIO */
-  .seccion-titulo {
+  .section-label {
     font-size: 10px;
     letter-spacing: 5px;
     color: var(--dorado);
     text-transform: uppercase;
-    margin-bottom: 24px;
+    margin-bottom: 40px;
     display: flex;
     align-items: center;
     gap: 16px;
   }
 
-  .seccion-titulo::after {
+  .section-label::after {
     content: "";
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
+    background: linear-gradient(90deg, rgba(201,168,76,0.4), transparent);
   }
 
-  .form-card {
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2px;
+  }
+
+  /* CARD */
+  .card {
     background: var(--negro-2);
-    border: 1px solid rgba(255,255,255,0.06);
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 2px;
+    border: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    position: relative;
   }
 
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
+  .card:hover { border-color: rgba(201,168,76,0.3); }
+  .card:hover .card-img img { transform: scale(1.05); }
+  .card:hover .card-overlay { opacity: 1; }
 
-  .form-campo {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-campo.full { grid-column: 1 / -1; }
-
-  .form-campo label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
-  }
-
-  .form-campo input,
-  .form-campo select,
-  .form-campo textarea {
-    padding: 11px 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--blanco);
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s;
-    border-radius: 2px;
-  }
-
-  .form-campo input:focus,
-  .form-campo select:focus,
-  .form-campo textarea:focus { border-color: var(--dorado); }
-
-  .form-campo select option { background: #1a1a1a; }
-  .form-campo textarea { resize: vertical; min-height: 80px; }
-
-  .precios-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    grid-column: 1 / -1;
-  }
-
-  .precio-campo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .precio-campo label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--dorado);
-    opacity: 0.7;
-  }
-
-  .precio-campo input {
-    padding: 10px 14px;
-    background: var(--dorado-tenue);
-    border: 1px solid rgba(201,168,76,0.2);
-    color: var(--blanco);
-    font-family: "Montserrat", sans-serif;
-    font-size: 14px;
-    outline: none;
-    border-radius: 2px;
-    transition: border-color 0.2s;
-  }
-
-  .precio-campo input:focus { border-color: var(--dorado); }
-
-  /* FOTO UPLOAD */
-  .foto-upload {
-    grid-column: 1 / -1;
-    border: 1px dashed rgba(201,168,76,0.25);
-    border-radius: 2px;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .foto-preview {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 2px;
-    display: none;
-    border: 1px solid rgba(201,168,76,0.2);
-  }
-
-  .foto-placeholder {
-    width: 80px;
-    height: 80px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 2px;
+  .card-img {
+    height: 280px;
+    overflow: hidden;
+    background: var(--negro-3);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    flex-shrink: 0;
   }
 
-  .foto-info { flex: 1; }
-  .foto-info p { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 10px; letter-spacing: 0.3px; line-height: 1.6; }
-
-  .btn-upload {
-    padding: 9px 20px;
-    border: 1px solid rgba(201,168,76,0.4);
-    background: transparent;
-    color: var(--dorado);
-    font-family: "Montserrat", sans-serif;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 2px;
-  }
-
-  .btn-upload:hover { background: var(--dorado-tenue); }
-
-  .form-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
-
-  .btn-guardar {
-    padding: 12px 32px;
-    background: var(--dorado);
-    border: none;
-    color: var(--negro);
-    font-family: "Montserrat", sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    border-radius: 2px;
-  }
-
-  .btn-guardar:hover { opacity: 0.85; }
-  .btn-guardar:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .btn-cancelar {
-    padding: 12px 24px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: transparent;
-    color: rgba(255,255,255,0.4);
-    font-family: "Montserrat", sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.2s;
-  }
-
-  .btn-cancelar:hover { border-color: rgba(255,255,255,0.3); color: var(--blanco); }
-
-  /* TABLA */
-  .tabla-wrap { overflow-x: auto; }
-
-  table {
+  .card-img img {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
   }
 
-  th {
-    text-align: left;
+  .card-img .placeholder {
+    font-size: 64px;
+    opacity: 0.2;
+  }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+
+  .badge-genero {
+    position: absolute;
+    top: 12px;
+    left: 12px;
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 4px 10px;
+    border-radius: 1px;
+  }
+
+  .badge-hombre { background: rgba(10,10,10,0.8); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+  .badge-mujer { background: rgba(201,168,76,0.15); border: 1px solid var(--dorado); color: var(--dorado); }
+  .badge-unisex { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+
+  .badge-temp {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 16px;
+  }
+
+  .card-body {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .card-marca {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dorado);
+    margin-bottom: 6px;
     font-weight: 500;
   }
 
-  td {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    color: rgba(255,255,255,0.7);
-    vertical-align: middle;
+  .card-nombre {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--blanco);
+    line-height: 1.2;
+    margin-bottom: 8px;
   }
 
-  tr:hover td { background: rgba(255,255,255,0.02); }
-
-  .td-foto {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    border-radius: 2px;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .td-nombre { font-family: "Cormorant Garamond", serif; font-size: 16px; color: var(--blanco); }
-  .td-marca { font-size: 10px; letter-spacing: 1px; color: var(--dorado); }
-
-  .badge-small {
-    font-size: 9px;
-    letter-spacing: 1px;
-    padding: 3px 8px;
-    border-radius: 1px;
-    text-transform: uppercase;
-  }
-
-  .badge-activo { background: rgba(76,175,119,0.15); border: 1px solid rgba(76,175,119,0.3); color: #4caf77; }
-  .badge-inactivo { background: rgba(224,85,85,0.1); border: 1px solid rgba(224,85,85,0.2); color: #e05555; }
-
-  .acciones { display: flex; gap: 8px; }
-
-  .btn-editar {
-    padding: 6px 14px;
-    border: 1px solid rgba(201,168,76,0.3);
-    background: transparent;
-    color: var(--dorado);
-    font-family: "Montserrat", sans-serif;
+  .card-familia {
     font-size: 10px;
+    color: rgba(255,255,255,0.35);
     letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 2px;
+    margin-bottom: 16px;
+    font-style: italic;
   }
 
-  .btn-editar:hover { background: var(--dorado-tenue); }
+  .precios {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
 
-  .btn-toggle {
-    padding: 6px 14px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: transparent;
+  .precio-item {
+    flex: 1;
+    background: var(--gris-tenue);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 8px 6px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .precio-item:hover, .precio-item.selected {
+    background: var(--dorado-tenue);
+    border-color: var(--dorado);
+  }
+
+  .precio-ml {
+    font-size: 10px;
     color: rgba(255,255,255,0.4);
-    font-family: "Montserrat", sans-serif;
-    font-size: 10px;
     letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 2px;
+    display: block;
+    margin-bottom: 3px;
   }
 
-  .btn-toggle:hover { border-color: var(--error); color: var(--error); }
+  .precio-val {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+    color: var(--blanco);
+    font-weight: 400;
+  }
 
-  .btn-nuevo {
-    padding: 10px 24px;
+  .btn-pedir {
+    width: 100%;
+    padding: 12px;
     background: transparent;
     border: 1px solid var(--dorado);
     color: var(--dorado);
     font-family: "Montserrat", sans-serif;
     font-size: 10px;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 2px;
-    margin-bottom: 32px;
+    transition: all 0.25s;
+    font-weight: 500;
   }
 
-  .btn-nuevo:hover { background: var(--dorado-tenue); }
+  .btn-pedir:hover {
+    background: var(--dorado);
+    color: var(--negro);
+  }
 
-  .empty-tabla {
+  /* ESTADO VACÍO */
+  .empty {
     text-align: center;
-    padding: 48px;
+    padding: 80px 20px;
     color: rgba(255,255,255,0.2);
-    font-style: italic;
     font-family: "Cormorant Garamond", serif;
-    font-size: 18px;
+    font-size: 24px;
+    font-style: italic;
   }
 
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--dorado);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid rgba(201,168,76,0.15);
+    padding: 48px 24px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,168,76,0.4);
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover { color: var(--dorado); }
+  .footer-link svg { width: 16px; height: 16px; }
+
+  .footer-copy {
+    font-size: 10px;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 1px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOBILE */
   @media (max-width: 600px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .precios-grid { grid-template-columns: 1fr; }
-    .form-campo.full { grid-column: 1; }
-    .foto-upload { flex-direction: column; }
-    .login-box { padding: 32px 24px; }
-    .admin-body { padding: 24px 16px 60px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
+    .card-img { height: 200px; }
+    .card-nombre { font-size: 18px; }
+    .nav-inner { gap: 8px; }
+    .search-box input { width: 140px; }
+    .search-box input:focus { width: 160px; }
+    .filtro-btn { padding: 6px 12px; font-size: 10px; }
+  }
+
+  @media (max-width: 400px) {
+    .grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<div id="toast"></div>
-
-<!-- LOGIN -->
-<div id="pantalla-login">
-  <div class="login-box">
-    <div class="login-logo">AR</div>
-    <div class="login-sub">Panel Administrador</div>
-    <div class="campo">
-      <label>Correo</label>
-      <input type="email" id="login-email" placeholder="correo@ejemplo.com"/>
-      <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')iniciarSesion()"/>
-    </div>
-    <button class="btn-login" onclick="iniciarSesion()">Entrar</button>
-    <div class="login-error" id="login-error"></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="logo-ar">AR</div>
+  <div class="logo-sub">Aromantic</div>
+  <p class="hero-tagline">Decants &amp; Perfumes por Encargo · Acuña, Coahuila</p>
+  <div class="hero-scroll">
+    <span>Ver catálogo</span>
+    <div class="scroll-line"></div>
   </div>
-</div>
+</section>
 
-<!-- ADMIN -->
-<div id="pantalla-admin">
-  <div class="topbar">
-    <span class="topbar-logo">AR · Admin</span>
-    <span class="topbar-user" id="user-email"></span>
-    <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
-  </div>
-
-  <div class="admin-body">
-
-    <!-- FORMULARIO -->
-    <div id="seccion-form" style="display:none">
-      <div class="seccion-titulo" id="form-titulo">Nuevo perfume</div>
-      <div class="form-card">
-        <input type="hidden" id="f-id"/>
-        <div class="form-grid">
-          <div class="form-campo">
-            <label>Marca *</label>
-            <input type="text" id="f-marca" placeholder="Ej. Dior, Montblanc..."/>
-          </div>
-          <div class="form-campo">
-            <label>Nombre del perfume *</label>
-            <input type="text" id="f-nombre" placeholder="Ej. Sauvage, Legend Spirit..."/>
-          </div>
-          <div class="form-campo">
-            <label>Familia olfativa</label>
-            <input type="text" id="f-familia" placeholder="Ej. Amaderado, Fresco, Oriental..."/>
-          </div>
-          <div class="form-campo">
-            <label>Género</label>
-            <select id="f-genero">
-              <option value="hombre">Hombre</option>
-              <option value="mujer">Mujer</option>
-              <option value="unisex">Unisex</option>
-            </select>
-          </div>
-          <div class="form-campo">
-            <label>Temporada</label>
-            <select id="f-temporada">
-              <option value="todo el año">Todo el año</option>
-              <option value="frio">Frío ❄️</option>
-              <option value="calor">Calor ☀️</option>
-            </select>
-          </div>
-          <div class="form-campo full">
-            <label>Descripción</label>
-            <textarea id="f-desc" placeholder="Breve descripción del aroma, notas principales..."></textarea>
-          </div>
-
-          <!-- PRECIOS -->
-          <div class="precios-grid">
-            <div class="precio-campo">
-              <label>Precio 3ml ($)</label>
-              <input type="number" id="f-precio-3" placeholder="40" min="0" step="1"/>
-            </div>
-            <div class="precio-campo">
-              <label>Precio 5ml ($)</label>
-              <input type="number" id="f-precio-5" placeholder="70" min="0" step="1"/>
-            </div>
-            <div class="precio-campo">
-              <label>Precio 10ml ($)</label>
-              <input type="number" id="f-precio-10" placeholder="140" min="0" step="1"/>
-            </div>
-          </div>
-
-          <!-- FOTO -->
-          <div class="foto-upload">
-            <div class="foto-placeholder" id="foto-placeholder">🌿</div>
-            <img class="foto-preview" id="foto-preview" alt="preview"/>
-            <div class="foto-info">
-              <p>Sube la foto del perfume. Recomendado: cuadrada, mínimo 400×400px.</p>
-              <input type="file" id="f-foto" accept="image/*" style="display:none" onchange="previsualizarFoto(this)"/>
-              <button class="btn-upload" onclick="document.getElementById('f-foto').click()">Elegir foto</button>
-              <span id="foto-nombre" style="font-size:10px;color:rgba(255,255,255,0.3);margin-left:12px;"></span>
-            </div>
-          </div>
-
-        </div>
-        <div class="form-actions">
-          <button class="btn-cancelar" onclick="cancelarForm()">Cancelar</button>
-          <button class="btn-guardar" id="btn-guardar" onclick="guardar()">Guardar perfume</button>
-        </div>
-      </div>
+<!-- NAV FILTROS -->
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-logo">AR</span>
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="busqueda" placeholder="Buscar perfume..." oninput="filtrar()"/>
     </div>
-
-    <!-- LISTA -->
-    <div id="seccion-lista">
-      <div class="seccion-titulo">Perfumes en catálogo</div>
-      <button class="btn-nuevo" onclick="mostrarForm()">+ Agregar perfume</button>
-      <div class="tabla-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Perfume</th>
-              <th>Género</th>
-              <th>Temporada</th>
-              <th>3ml</th>
-              <th>5ml</th>
-              <th>10ml</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-body">
-            <tr><td colspan="9" class="empty-tabla">Cargando...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
+    <button class="filtro-btn active" onclick="setFiltro('todos',this)">Todos</button>
+    <button class="filtro-btn" onclick="setFiltro('hombre',this)">Hombre</button>
+    <button class="filtro-btn" onclick="setFiltro('mujer',this)">Mujer</button>
+    <button class="filtro-btn" onclick="setFiltro('unisex',this)">Unisex</button>
   </div>
-</div>
+</nav>
+
+<!-- CATÁLOGO -->
+<main class="catalogo">
+  <div class="section-label">Colección disponible</div>
+  <div class="grid" id="grid">
+    <div class="loading" style="grid-column:1/-1">Cargando colección...</div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">AROMANTIC</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://wa.me/528771287351" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      877 128 7351
+    </a>
+    <a class="footer-link" href="https://www.instagram.com/aromantic_jmx" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      @aromantic_jmx
+    </a>
+  </div>
+  <p class="footer-copy">© 2025 Aromantic · Decants &amp; Perfumes por Encargo</p>
+</footer>
 
 <script>
 const SUPABASE_URL = "https://kgrwrordxxuzwuiuwdog.supabase.co";
@@ -642,251 +543,106 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let todosLosProductos = [];
-let todosLosPrecios = [];
+const WA = "528771287351";
+let todos = [];
+let filtroActivo = "todos";
+let seleccionados = {};
 
-// ── AUTH ──
-async function iniciarSesion() {
-  const email = document.getElementById("login-email").value.trim();
-  const pass = document.getElementById("login-pass").value;
-  document.getElementById("login-error").textContent = "";
+async function cargar() {
+  const { data: perfumes } = await db.from("perfumes").select("*").eq("activo", true).order("marca");
+  const { data: precios } = await db.from("precios").select("*").eq("disponible", true);
 
-  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    document.getElementById("login-error").textContent = "Correo o contraseña incorrectos.";
-    return;
-  }
-  mostrarAdmin(data.user.email);
+  todos = perfumes.map(p => ({
+    ...p,
+    precios: precios.filter(pr => pr.perfume_id === p.id).sort((a,b) => parseFloat(a.tamano) - parseFloat(b.tamano))
+  }));
+
+  renderizar();
 }
 
-async function cerrarSesion() {
-  await db.auth.signOut();
-  document.getElementById("pantalla-admin").style.display = "none";
-  document.getElementById("pantalla-login").style.display = "flex";
+function setFiltro(f, btn) {
+  filtroActivo = f;
+  document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderizar();
 }
 
-function mostrarAdmin(email) {
-  document.getElementById("pantalla-login").style.display = "none";
-  document.getElementById("pantalla-admin").style.display = "block";
-  document.getElementById("user-email").textContent = email;
-  cargarTabla();
-}
+function filtrar() { renderizar(); }
 
-// Check session on load
-db.auth.getSession().then(({ data }) => {
-  if (data?.session?.user) mostrarAdmin(data.session.user.email);
-});
+function renderizar() {
+  const busqueda = document.getElementById("busqueda").value.toLowerCase();
+  const grid = document.getElementById("grid");
 
-// ── TABLA ──
-async function cargarTabla() {
-  const { data: perfumes } = await db.from("perfumes").select("*").order("marca");
-  const { data: precios } = await db.from("precios").select("*");
-  todosLosProductos = perfumes || [];
-  todosLosPrecios = precios || [];
-  renderTabla();
-}
+  let items = todos.filter(p => {
+    const matchFiltro = filtroActivo === "todos" || p.genero === filtroActivo;
+    const matchBusqueda = !busqueda ||
+      p.nombre.toLowerCase().includes(busqueda) ||
+      p.marca.toLowerCase().includes(busqueda) ||
+      (p.familia_olfativa || "").toLowerCase().includes(busqueda);
+    return matchFiltro && matchBusqueda;
+  });
 
-function renderTabla() {
-  const tbody = document.getElementById("tabla-body");
-
-  if (todosLosProductos.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-tabla">Aún no hay perfumes · Agrega el primero</td></tr>`;
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">No se encontraron fragancias</div>`;
     return;
   }
 
-  tbody.innerHTML = todosLosProductos.map(p => {
-    const pp = todosLosPrecios.filter(pr => pr.perfume_id === p.id);
-    const p3 = pp.find(pr => pr.tamano === "3ml");
-    const p5 = pp.find(pr => pr.tamano === "5ml");
-    const p10 = pp.find(pr => pr.tamano === "10ml");
-
-    const fotoHtml = p.foto_url
-      ? `<img src="${p.foto_url}" class="td-foto" alt="${p.nombre}"/>`
-      : `<span style="font-size:24px">🌿</span>`;
-
+  grid.innerHTML = items.map((p, i) => {
     const tempEmoji = p.temporada === "frio" ? "❄️" : p.temporada === "calor" ? "☀️" : "✦";
+    const foto = p.foto_url
+      ? `<img src="${p.foto_url}" alt="${p.nombre}" loading="lazy"/>`
+      : `<span class="placeholder">🌿</span>`;
+    const sel = seleccionados[p.id];
+
+    const preciosHtml = p.precios.map(pr => `
+      <div class="precio-item ${sel === pr.id ? 'selected' : ''}" onclick="seleccionar('${p.id}','${pr.id}'); event.stopPropagation()">
+        <span class="precio-ml">${pr.tamano}</span>
+        <span class="precio-val">$${parseFloat(pr.precio).toFixed(0)}</span>
+      </div>
+    `).join("");
 
     return `
-      <tr>
-        <td>${fotoHtml}</td>
-        <td>
-          <div class="td-nombre">${p.nombre}</div>
-          <div class="td-marca">${p.marca}</div>
-        </td>
-        <td style="text-transform:capitalize">${p.genero || "—"}</td>
-        <td>${tempEmoji} ${p.temporada || "—"}</td>
-        <td>${p3 ? "$" + parseFloat(p3.precio).toFixed(0) : "—"}</td>
-        <td>${p5 ? "$" + parseFloat(p5.precio).toFixed(0) : "—"}</td>
-        <td>${p10 ? "$" + parseFloat(p10.precio).toFixed(0) : "—"}</td>
-        <td><span class="badge-small ${p.activo ? 'badge-activo' : 'badge-inactivo'}">${p.activo ? "Activo" : "Oculto"}</span></td>
-        <td>
-          <div class="acciones">
-            <button class="btn-editar" onclick="editarProducto('${p.id}')">Editar</button>
-            <button class="btn-toggle" onclick="toggleActivo('${p.id}', ${p.activo})">${p.activo ? "Ocultar" : "Activar"}</button>
-          </div>
-        </td>
-      </tr>
+      <div class="card" style="animation-delay:${i*0.07}s">
+        <div class="card-img">
+          ${foto}
+          <span class="badge-genero badge-${p.genero}">${p.genero}</span>
+          <span class="badge-temp" title="${p.temporada}">${tempEmoji}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-marca">${p.marca}</div>
+          <div class="card-nombre">${p.nombre}</div>
+          ${p.familia_olfativa ? `<div class="card-familia">${p.familia_olfativa}</div>` : ""}
+          <div class="precios">${preciosHtml}</div>
+          <button class="btn-pedir" onclick="pedir('${p.id}','${p.nombre}','${p.marca}')">
+            Pedir por WhatsApp
+          </button>
+        </div>
+      </div>
     `;
   }).join("");
 }
 
-// ── FORM ──
-function mostrarForm(id = null) {
-  document.getElementById("seccion-form").style.display = "block";
-  document.getElementById("seccion-lista").style.display = "none";
-  limpiarForm();
+function seleccionar(perfumeId, precioId) {
+  seleccionados[perfumeId] = precioId;
+  renderizar();
+}
 
-  if (id) {
-    const p = todosLosProductos.find(x => x.id === id);
-    const pp = todosLosPrecios.filter(pr => pr.perfume_id === id);
-    const p3 = pp.find(pr => pr.tamano === "3ml");
-    const p5 = pp.find(pr => pr.tamano === "5ml");
-    const p10 = pp.find(pr => pr.tamano === "10ml");
+function pedir(perfumeId, nombre, marca) {
+  const perfume = todos.find(p => p.id === perfumeId);
+  const selId = seleccionados[perfumeId];
+  const precio = selId ? perfume.precios.find(pr => pr.id === selId) : null;
 
-    document.getElementById("form-titulo").textContent = "Editar perfume";
-    document.getElementById("f-id").value = p.id;
-    document.getElementById("f-marca").value = p.marca || "";
-    document.getElementById("f-nombre").value = p.nombre || "";
-    document.getElementById("f-familia").value = p.familia_olfativa || "";
-    document.getElementById("f-genero").value = p.genero || "hombre";
-    document.getElementById("f-temporada").value = p.temporada || "todo el año";
-    document.getElementById("f-desc").value = p.descripcion || "";
-    if (p3) document.getElementById("f-precio-3").value = p3.precio;
-    if (p5) document.getElementById("f-precio-5").value = p5.precio;
-    if (p10) document.getElementById("f-precio-10").value = p10.precio;
-
-    if (p.foto_url) {
-      document.getElementById("foto-placeholder").style.display = "none";
-      const prev = document.getElementById("foto-preview");
-      prev.src = p.foto_url;
-      prev.style.display = "block";
-    }
+  let msg;
+  if (precio) {
+    msg = `Hola Aromantic! Me interesa:\n\n🌿 *${marca} - ${nombre}*\n📦 Tamaño: ${precio.tamano}\n💰 Precio: $${parseFloat(precio.precio).toFixed(0)}\n\n¿Está disponible?`;
   } else {
-    document.getElementById("form-titulo").textContent = "Nuevo perfume";
-  }
-}
-
-function cancelarForm() {
-  document.getElementById("seccion-form").style.display = "none";
-  document.getElementById("seccion-lista").style.display = "block";
-}
-
-function limpiarForm() {
-  ["f-id","f-marca","f-nombre","f-familia","f-desc","f-precio-3","f-precio-5","f-precio-10"].forEach(id => {
-    document.getElementById(id).value = "";
-  });
-  document.getElementById("f-genero").value = "hombre";
-  document.getElementById("f-temporada").value = "todo el año";
-  document.getElementById("foto-placeholder").style.display = "flex";
-  document.getElementById("foto-preview").style.display = "none";
-  document.getElementById("foto-nombre").textContent = "";
-  document.getElementById("f-foto").value = "";
-}
-
-function editarProducto(id) {
-  mostrarForm(id);
-  document.getElementById("seccion-form").scrollIntoView({ behavior: "smooth" });
-}
-
-function previsualizarFoto(input) {
-  const file = input.files[0];
-  if (!file) return;
-  document.getElementById("foto-nombre").textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById("foto-placeholder").style.display = "none";
-    const prev = document.getElementById("foto-preview");
-    prev.src = e.target.result;
-    prev.style.display = "block";
-  };
-  reader.readAsDataURL(file);
-}
-
-async function guardar() {
-  const id = document.getElementById("f-id").value;
-  const marca = document.getElementById("f-marca").value.trim();
-  const nombre = document.getElementById("f-nombre").value.trim();
-
-  if (!marca || !nombre) { toast("Marca y nombre son obligatorios", "error"); return; }
-
-  const btn = document.getElementById("btn-guardar");
-  btn.disabled = true;
-  btn.textContent = "Guardando...";
-
-  // Subir foto si hay
-  let foto_url = null;
-  const fotoFile = document.getElementById("f-foto").files[0];
-
-  if (fotoFile) {
-    const ext = fotoFile.name.split(".").pop();
-    const path = `${Date.now()}.${ext}`;
-    const { error: uploadError } = await db.storage
-      .from("Fotos-perfumes")
-      .upload(path, fotoFile, { upsert: true });
-
-    if (!uploadError) {
-      const { data: urlData } = db.storage.from("Fotos-perfumes").getPublicUrl(path);
-      foto_url = urlData.publicUrl;
-    }
+    msg = `Hola Aromantic! Me interesa:\n\n🌿 *${marca} - ${nombre}*\n\n¿Cuáles tamaños tienen disponibles?`;
   }
 
-  const datos = {
-    marca,
-    nombre,
-    familia_olfativa: document.getElementById("f-familia").value.trim() || null,
-    genero: document.getElementById("f-genero").value,
-    temporada: document.getElementById("f-temporada").value,
-    descripcion: document.getElementById("f-desc").value.trim() || null,
-  };
-
-  if (foto_url) datos.foto_url = foto_url;
-
-  let perfumeId = id;
-
-  if (id) {
-    await db.from("perfumes").update(datos).eq("id", id);
-  } else {
-    const { data } = await db.from("perfumes").insert({ ...datos, activo: true }).select().single();
-    perfumeId = data.id;
-  }
-
-  // Guardar precios
-  const tamanos = [
-    { tamano: "3ml", val: document.getElementById("f-precio-3").value },
-    { tamano: "5ml", val: document.getElementById("f-precio-5").value },
-    { tamano: "10ml", val: document.getElementById("f-precio-10").value },
-  ];
-
-  for (const t of tamanos) {
-    if (!t.val) continue;
-    const existe = todosLosPrecios.find(p => p.perfume_id === perfumeId && p.tamano === t.tamano);
-    if (existe) {
-      await db.from("precios").update({ precio: parseFloat(t.val) }).eq("id", existe.id);
-    } else {
-      await db.from("precios").insert({ perfume_id: perfumeId, tamano: t.tamano, precio: parseFloat(t.val), disponible: true });
-    }
-  }
-
-  btn.disabled = false;
-  btn.textContent = "Guardar perfume";
-  toast("Perfume guardado correctamente", "ok");
-  cancelarForm();
-  cargarTabla();
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
-async function toggleActivo(id, activo) {
-  await db.from("perfumes").update({ activo: !activo }).eq("id", id);
-  await cargarTabla();
-  toast(!activo ? "Perfume activado" : "Perfume ocultado", "ok");
-}
-
-// ── TOAST ──
-function toast(msg, tipo = "") {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = tipo ? `show ${tipo}` : "show";
-  setTimeout(() => { t.className = tipo; }, 3000);
-}
+cargar();
 </script>
 </body>
 </html>
