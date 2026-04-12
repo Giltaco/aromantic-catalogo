@@ -821,11 +821,11 @@ async function guardar() {
     const ext = fotoFile.name.split(".").pop();
     const path = `${Date.now()}.${ext}`;
     const { error: uploadError } = await db.storage
-      .from("fotos-perfumes")
+      .from("Fotos-perfumes")
       .upload(path, fotoFile, { upsert: true });
 
     if (!uploadError) {
-      const { data: urlData } = db.storage.from("fotos-perfumes").getPublicUrl(path);
+      const { data: urlData } = db.storage.from("Fotos-perfumes").getPublicUrl(path);
       foto_url = urlData.publicUrl;
     }
   }
