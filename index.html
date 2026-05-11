@@ -3,572 +3,852 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Aromantic — Decants de Perfume</title>
+<title>Aromantic — Decants de Perfume · Acuña, Coahuila</title>
+<meta name="description" content="Decants y perfumes por encargo en Acuña, Coahuila. Fragancias de lujo en presentaciones de 3ml, 5ml y 10ml. Pide por WhatsApp."/>
+<meta property="og:title" content="Aromantic — Decants de Perfume"/>
+<meta property="og:description" content="Fragancias de lujo en pequeñas presentaciones. Acuña, Coahuila."/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://kgrwrordxxuzwuiuwdog.supabase.co/storage/v1/object/public/fotos-perfumes/og-cover.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --negro: #0a0a0a;
-    --negro-2: #111111;
-    --negro-3: #1a1a1a;
-    --dorado: #C9A84C;
-    --dorado-claro: #E8C97A;
-    --dorado-tenue: rgba(201,168,76,0.15);
-    --blanco: #f5f5f0;
-    --gris: rgba(255,255,255,0.5);
-    --gris-tenue: rgba(255,255,255,0.08);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ═══════════════════════════
+   TOKENS
+═══════════════════════════ */
+:root {
+  --bg:          #0a0a0a;
+  --bg2:         #111111;
+  --bg3:         #1a1a1a;
+  --gold:        #C9A84C;
+  --gold-l:      #E8C97A;
+  --gold-dim:    rgba(201,168,76,0.12);
+  --gold-border: rgba(201,168,76,0.22);
+  --white:       #f5f5f0;
+  --white-70:    rgba(245,245,240,0.7);
+  --white-50:    rgba(245,245,240,0.5);
+  --white-30:    rgba(245,245,240,0.3);
+  --white-10:    rgba(245,245,240,0.1);
+  --white-06:    rgba(245,245,240,0.06);
+  --white-03:    rgba(245,245,240,0.03);
+  --red:         #d95f5f;
+  --green:       #52a877;
+  --serif:       "Cormorant Garamond", serif;
+  --sans:        "Montserrat", sans-serif;
+}
 
-  body {
-    font-family: "Montserrat", sans-serif;
-    background: var(--negro);
-    color: var(--blanco);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-  /* GRAIN OVERLAY */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
-  }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px 20px;
-    position: relative;
-    background: radial-gradient(ellipse at 50% 60%, rgba(201,168,76,0.08) 0%, transparent 70%);
-  }
+/* GRAIN */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.35;
+}
 
-  .hero::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--dorado), transparent);
-  }
+/* ═══════════════════════════
+   HERO
+═══════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px 80px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 55%, rgba(201,168,76,0.07) 0%, transparent 65%),
+    var(--bg);
+  overflow: hidden;
+}
 
-  .logo-ar {
-    font-family: "Cormorant Garamond", serif;
-    font-size: clamp(80px, 18vw, 160px);
-    font-weight: 300;
-    letter-spacing: -4px;
-    color: transparent;
-    -webkit-text-stroke: 1px var(--dorado);
-    line-height: 0.85;
-    opacity: 0;
-    animation: fadeUp 1.2s ease 0.2s forwards;
-  }
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
 
-  .logo-sub {
-    font-family: "Montserrat", sans-serif;
-    font-size: clamp(10px, 2vw, 13px);
-    font-weight: 400;
-    letter-spacing: 8px;
-    color: var(--dorado);
-    text-transform: uppercase;
-    margin-top: 12px;
-    opacity: 0;
-    animation: fadeUp 1.2s ease 0.5s forwards;
-  }
+/* Background decorative text */
+.hero-bg-text {
+  position: absolute;
+  font-family: var(--serif);
+  font-size: clamp(120px, 28vw, 280px);
+  font-weight: 300;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201,168,76,0.04);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -10px;
+  white-space: nowrap;
+}
 
-  .hero-tagline {
-    font-family: "Cormorant Garamond", serif;
-    font-size: clamp(14px, 3vw, 18px);
-    font-weight: 300;
-    font-style: italic;
-    color: var(--gris);
-    margin-top: 32px;
-    letter-spacing: 1px;
-    opacity: 0;
-    animation: fadeUp 1.2s ease 0.8s forwards;
-  }
+.logo-ar {
+  font-family: var(--serif);
+  font-size: clamp(80px, 18vw, 160px);
+  font-weight: 300;
+  letter-spacing: -4px;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gold);
+  line-height: 0.85;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.2s forwards;
+  position: relative;
+}
 
-  .hero-scroll {
-    position: absolute;
-    bottom: 36px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    animation: fadeUp 1.2s ease 1.2s forwards;
-  }
+.logo-sub {
+  font-family: var(--sans);
+  font-size: clamp(10px, 2vw, 12px);
+  font-weight: 400;
+  letter-spacing: 8px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-top: 14px;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.5s forwards;
+}
 
-  .hero-scroll span {
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: var(--dorado);
-    text-transform: uppercase;
-  }
+.hero-tagline {
+  font-family: var(--serif);
+  font-size: clamp(14px, 3vw, 19px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--white-50);
+  margin-top: 36px;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.8s forwards;
+}
 
-  .scroll-line {
-    width: 1px;
-    height: 48px;
-    background: linear-gradient(to bottom, var(--dorado), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
+.hero-divider {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 24px auto 0;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 1s forwards;
+}
 
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.4; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.1); }
-  }
+.hero-scroll {
+  position: absolute;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 1.2s forwards;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  text-decoration: none;
+}
 
-  /* NAV */
-  .nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,10,0.92);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(201,168,76,0.2);
-    padding: 16px 24px;
-  }
+.hero-scroll span {
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-family: var(--sans);
+}
 
-  .nav-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
+.scroll-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
 
-  .nav-logo {
-    font-family: "Cormorant Garamond", serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--dorado);
-    letter-spacing: 2px;
-    margin-right: auto;
-  }
+/* ═══════════════════════════
+   NAV
+═══════════════════════════ */
+.nav {
+  position: sticky;
+  top: 0; z-index: 100;
+  background: rgba(10,10,10,0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--gold-border);
+  padding: 0 24px;
+}
 
-  .search-box {
-    position: relative;
-  }
+.nav-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 58px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
 
-  .search-box input {
-    background: var(--gris-tenue);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 2px;
-    padding: 8px 16px 8px 36px;
-    color: var(--blanco);
-    font-family: "Montserrat", sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    outline: none;
-    width: 200px;
-    transition: border-color 0.2s, width 0.3s;
-  }
+.nav-inner::-webkit-scrollbar { display: none; }
 
-  .search-box input:focus { border-color: var(--dorado); width: 240px; }
-  .search-box input::placeholder { color: rgba(255,255,255,0.3); }
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 
-  .search-box svg {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 14px;
-    height: 14px;
-    color: rgba(255,255,255,0.3);
-  }
+.search-box { position: relative; flex-shrink: 0; }
 
-  .filtro-btn {
-    padding: 7px 16px;
-    border-radius: 2px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: transparent;
-    color: rgba(255,255,255,0.5);
-    font-family: "Montserrat", sans-serif;
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
+.search-box input {
+  background: var(--white-06);
+  border: 1px solid var(--gold-border);
+  border-radius: 2px;
+  padding: 8px 14px 8px 34px;
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  outline: none;
+  width: 190px;
+  transition: border-color 0.2s, width 0.3s;
+}
 
-  .filtro-btn:hover { border-color: var(--dorado); color: var(--dorado); }
-  .filtro-btn.active { background: var(--dorado); border-color: var(--dorado); color: var(--negro); font-weight: 600; }
+.search-box input:focus { border-color: var(--gold); width: 230px; }
+.search-box input::placeholder { color: var(--white-30); }
 
-  /* MAIN CONTENT */
-  .catalogo {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 60px 24px 80px;
-  }
+.search-box svg {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  width: 13px; height: 13px;
+  color: var(--white-30);
+  pointer-events: none;
+}
 
-  .section-label {
-    font-size: 10px;
-    letter-spacing: 5px;
-    color: var(--dorado);
-    text-transform: uppercase;
-    margin-bottom: 40px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+.nav-sep {
+  width: 1px; height: 20px;
+  background: var(--white-10);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
 
-  .section-label::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(201,168,76,0.4), transparent);
-  }
+.filtro-btn {
+  padding: 6px 14px;
+  border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: transparent;
+  color: var(--white-50);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
-  /* GRID */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 2px;
-  }
+.filtro-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+.filtro-btn.active { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 600; }
 
-  /* CARD */
-  .card {
-    background: var(--negro-2);
-    border: 1px solid rgba(255,255,255,0.04);
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.3s;
-    opacity: 0;
-    animation: fadeUp 0.5s ease forwards;
-    position: relative;
-  }
+.nav-counter {
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--white-30);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
 
-  .card:hover { border-color: rgba(201,168,76,0.3); }
-  .card:hover .card-img img { transform: scale(1.05); }
-  .card:hover .card-overlay { opacity: 1; }
+.nav-counter strong { color: var(--gold); }
 
-  .card-img {
-    height: 280px;
-    overflow: hidden;
-    background: var(--negro-3);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+/* ═══════════════════════════
+   MAIN
+═══════════════════════════ */
+.catalogo {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 52px 24px 80px;
+}
 
-  .card-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
+.section-label {
+  font-size: 9px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0.8;
+}
 
-  .card-img .placeholder {
-    font-size: 64px;
-    opacity: 0.2;
-  }
+.section-label::after {
+  content: "";
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--gold-border), transparent);
+}
 
-  .card-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    display: flex;
-    align-items: flex-end;
-    padding: 20px;
-  }
+/* ═══════════════════════════
+   SKELETON
+═══════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 2px;
+}
 
-  .badge-genero {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 1px;
-  }
+.skeleton-card {
+  background: var(--bg2);
+  border: 1px solid var(--white-06);
+  overflow: hidden;
+}
 
-  .badge-hombre { background: rgba(10,10,10,0.8); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
-  .badge-mujer { background: rgba(201,168,76,0.15); border: 1px solid var(--dorado); color: var(--dorado); }
-  .badge-unisex { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+.skeleton-img {
+  height: 280px;
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+}
 
-  .badge-temp {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 16px;
-  }
+.skeleton-body { padding: 20px; }
 
-  .card-body {
-    padding: 20px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-  }
+.skeleton-line {
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  margin-bottom: 10px;
+}
 
-  .card-marca {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--dorado);
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
+/* ═══════════════════════════
+   CARDS
+═══════════════════════════ */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--white-06);
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.3s, transform 0.3s;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+  position: relative;
+}
 
-  .card-nombre {
-    font-family: "Cormorant Garamond", serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--blanco);
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
+.card:hover {
+  border-color: var(--gold-border);
+  transform: translateY(-2px);
+  z-index: 1;
+}
 
-  .card-familia {
-    font-size: 10px;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 1px;
-    margin-bottom: 16px;
-    font-style: italic;
-  }
+.card:hover .card-img img { transform: scale(1.05); }
 
-  .precios {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
+.card-img {
+  height: 280px;
+  overflow: hidden;
+  background: var(--bg3);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .precio-item {
-    flex: 1;
-    background: var(--gris-tenue);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 2px;
-    padding: 8px 6px;
-    text-align: center;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
+.card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s ease;
+  display: block;
+}
 
-  .precio-item:hover, .precio-item.selected {
-    background: var(--dorado-tenue);
-    border-color: var(--dorado);
-  }
+.card-img .placeholder {
+  font-size: 56px;
+  opacity: 0.15;
+  position: absolute;
+}
 
-  .precio-ml {
-    font-size: 10px;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 1px;
-    display: block;
-    margin-bottom: 3px;
-  }
+.badge-genero {
+  position: absolute;
+  top: 12px; left: 12px;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 1px;
+  backdrop-filter: blur(8px);
+}
 
-  .precio-val {
-    font-family: "Cormorant Garamond", serif;
-    font-size: 18px;
-    color: var(--blanco);
-    font-weight: 400;
-  }
+.badge-hombre { background: rgba(10,10,10,0.75); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.65); }
+.badge-mujer  { background: rgba(201,168,76,0.15); border: 1px solid var(--gold); color: var(--gold); }
+.badge-unisex { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.55); }
 
-  .btn-pedir {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid var(--dorado);
-    color: var(--dorado);
-    font-family: "Montserrat", sans-serif;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.25s;
-    font-weight: 500;
-  }
+.badge-temp {
+  position: absolute;
+  top: 10px; right: 12px;
+  font-size: 17px;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+}
 
-  .btn-pedir:hover {
-    background: var(--dorado);
-    color: var(--negro);
-  }
+.card-body {
+  padding: 20px;
+  border-top: 1px solid var(--white-06);
+}
 
-  /* ESTADO VACÍO */
-  .empty {
-    text-align: center;
-    padding: 80px 20px;
-    color: rgba(255,255,255,0.2);
-    font-family: "Cormorant Garamond", serif;
-    font-size: 24px;
-    font-style: italic;
-  }
+.card-marca {
+  font-size: 8.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+  font-weight: 500;
+  opacity: 0.8;
+}
 
-  /* LOADING */
-  .loading {
-    text-align: center;
-    padding: 80px 20px;
-    color: var(--dorado);
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-  }
+.card-nombre {
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
 
-  /* FOOTER */
-  .footer {
-    border-top: 1px solid rgba(201,168,76,0.15);
-    padding: 48px 24px;
-    text-align: center;
-  }
+.card-familia {
+  font-size: 10px;
+  color: var(--white-30);
+  letter-spacing: 0.8px;
+  margin-bottom: 18px;
+  font-style: italic;
+  line-height: 1.4;
+}
 
-  .footer-logo {
-    font-family: "Cormorant Garamond", serif;
-    font-size: 36px;
-    font-weight: 300;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(201,168,76,0.4);
-    letter-spacing: 4px;
-    margin-bottom: 24px;
-  }
+/* PRECIOS */
+.precios {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
 
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-  }
+.precio-item {
+  flex: 1;
+  background: var(--white-06);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 2px;
+  padding: 10px 4px;
+  text-align: center;
+  transition: all 0.18s;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
 
-  .footer-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: rgba(255,255,255,0.4);
-    text-decoration: none;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
+.precio-item:hover {
+  background: var(--gold-dim);
+  border-color: var(--gold-border);
+}
 
-  .footer-link:hover { color: var(--dorado); }
-  .footer-link svg { width: 16px; height: 16px; }
+.precio-item.selected {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+}
 
-  .footer-copy {
-    font-size: 10px;
-    color: rgba(255,255,255,0.15);
-    letter-spacing: 1px;
-  }
+.precio-ml {
+  font-size: 9px;
+  color: var(--white-30);
+  letter-spacing: 1px;
+  display: block;
+}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+.precio-item.selected .precio-ml { color: var(--gold); opacity: 0.7; }
 
-  /* MOBILE */
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
-    .card-img { height: 200px; }
-    .card-nombre { font-size: 18px; }
-    .nav-inner { gap: 8px; }
-    .search-box input { width: 140px; }
-    .search-box input:focus { width: 160px; }
-    .filtro-btn { padding: 6px 12px; font-size: 10px; }
-  }
+.precio-val {
+  font-family: var(--serif);
+  font-size: 19px;
+  color: var(--white);
+  font-weight: 400;
+  line-height: 1;
+}
 
-  @media (max-width: 400px) {
-    .grid { grid-template-columns: 1fr; }
-  }
+.precio-item.selected .precio-val { color: var(--gold); }
+
+/* WA BUTTON */
+.btn-pedir {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.22s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-pedir:hover {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
+.btn-pedir svg { flex-shrink: 0; }
+
+/* ═══════════════════════════
+   ESTADOS
+═══════════════════════════ */
+.estado-error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.estado-error-icon { font-size: 36px; margin-bottom: 16px; opacity: 0.5; }
+
+.estado-error h3 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--white-50);
+  margin-bottom: 8px;
+}
+
+.estado-error p {
+  font-size: 12px;
+  color: var(--white-30);
+  margin-bottom: 24px;
+  line-height: 1.7;
+}
+
+.btn-retry {
+  padding: 10px 28px;
+  border: 1px solid var(--gold-border);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.btn-retry:hover { background: var(--gold-dim); }
+
+.estado-vacio {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.estado-vacio-symbol {
+  font-family: var(--serif);
+  font-size: 64px;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201,168,76,0.2);
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.estado-vacio h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--white-30);
+  margin-bottom: 8px;
+}
+
+.estado-vacio p {
+  font-size: 11px;
+  color: var(--white-30);
+  letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════
+   ENCARGOS
+═══════════════════════════ */
+.encargos {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.encargos-box {
+  border: 1px solid var(--gold-border);
+  background: rgba(201,168,76,0.03);
+  padding: 52px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.encargos-box:hover { border-color: rgba(201,168,76,0.4); }
+
+.encargos-box::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.encargos-symbol {
+  font-size: 24px;
+  margin-bottom: 14px;
+  opacity: 0.6;
+  display: block;
+}
+
+.encargos-title {
+  font-family: var(--serif);
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+
+.encargos-desc {
+  font-size: 13px;
+  color: var(--white-50);
+  font-weight: 300;
+  letter-spacing: 0.3px;
+  line-height: 1.9;
+  max-width: 440px;
+  margin: 0 auto 32px;
+}
+
+.btn-encargo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 36px;
+  background: var(--gold);
+  color: var(--bg);
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-encargo:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-encargo svg { flex-shrink: 0; }
+
+/* ═══════════════════════════
+   BACK TO TOP
+═══════════════════════════ */
+.back-top {
+  position: fixed;
+  bottom: 28px; right: 24px;
+  width: 42px; height: 42px;
+  background: var(--bg2);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  border-radius: 2px;
+}
+
+.back-top.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+.back-top:hover { background: var(--gold-dim); border-color: var(--gold); }
+
+/* ═══════════════════════════
+   FOOTER
+═══════════════════════════ */
+.footer {
+  border-top: 1px solid var(--gold-border);
+  padding: 52px 24px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 300;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201,168,76,0.35);
+  letter-spacing: 6px;
+  margin-bottom: 28px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--white-30);
+  text-decoration: none;
+  font-size: 10.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.footer-link:hover { color: var(--gold); }
+.footer-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.footer-copy { font-size: 10px; color: rgba(255,255,255,0.12); letter-spacing: 1px; }
+.footer-copy + .footer-copy { margin-top: 5px; }
+
+/* ═══════════════════════════
+   ANIMATIONS
+═══════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════
+   RESPONSIVE
+═══════════════════════════ */
+@media (max-width: 640px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .card-img { height: 210px; }
+  .card-nombre { font-size: 19px; }
+  .nav-inner { gap: 6px; height: 52px; }
+  .search-box input { width: 130px; }
+  .search-box input:focus { width: 150px; }
+  .filtro-btn { padding: 5px 11px; font-size: 9.5px; letter-spacing: 1px; }
+  .nav-counter { display: none; }
+  .encargos-box { padding: 36px 20px; }
+}
+
+@media (max-width: 400px) {
+  .grid { grid-template-columns: 1fr; }
+  .card-img { height: 260px; }
+}
 </style>
 </head>
 <body>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="hero">
+  <div class="hero-bg-text" aria-hidden="true">AR</div>
   <div class="logo-ar">AR</div>
   <div class="logo-sub">Aromantic</div>
   <p class="hero-tagline">Decants &amp; Perfumes por Encargo · Acuña, Coahuila</p>
-  <div class="hero-scroll">
+  <div class="hero-divider"></div>
+  <a class="hero-scroll" href="#catalogo" aria-label="Ver catálogo">
     <span>Ver catálogo</span>
     <div class="scroll-line"></div>
-  </div>
+  </a>
 </section>
 
-<!-- NAV FILTROS -->
-<nav class="nav">
+<!-- NAV -->
+<nav class="nav" id="nav">
   <div class="nav-inner">
     <span class="nav-logo">AR</span>
+
     <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="busqueda" placeholder="Buscar perfume..." oninput="filtrar()"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="busqueda" placeholder="Buscar fragancia..." oninput="filtrar()" autocomplete="off"/>
     </div>
-    <button class="filtro-btn active" onclick="setFiltro('todos',this)">Todos</button>
-    <button class="filtro-btn" onclick="setFiltro('hombre',this)">Hombre</button>
-    <button class="filtro-btn" onclick="setFiltro('mujer',this)">Mujer</button>
-    <button class="filtro-btn" onclick="setFiltro('unisex',this)">Unisex</button>
+
+    <div class="nav-sep"></div>
+
+    <button class="filtro-btn active" data-filtro="genero" data-val="todos"   onclick="setFiltro('genero','todos',this)">Todos</button>
+    <button class="filtro-btn"        data-filtro="genero" data-val="hombre"  onclick="setFiltro('genero','hombre',this)">Hombre</button>
+    <button class="filtro-btn"        data-filtro="genero" data-val="mujer"   onclick="setFiltro('genero','mujer',this)">Mujer</button>
+    <button class="filtro-btn"        data-filtro="genero" data-val="unisex"  onclick="setFiltro('genero','unisex',this)">Unisex</button>
+
+    <div class="nav-sep"></div>
+
+    <button class="filtro-btn active" data-filtro="temp" data-val="todos"      onclick="setFiltro('temp','todos',this)">✦ Todos</button>
+    <button class="filtro-btn"        data-filtro="temp" data-val="frio"        onclick="setFiltro('temp','frio',this)">❄️ Frío</button>
+    <button class="filtro-btn"        data-filtro="temp" data-val="calor"       onclick="setFiltro('temp','calor',this)">☀️ Calor</button>
+
+    <span class="nav-counter" id="nav-counter"></span>
   </div>
 </nav>
 
 <!-- CATÁLOGO -->
-<main class="catalogo">
+<main class="catalogo" id="catalogo">
   <div class="section-label">Colección disponible</div>
   <div class="grid" id="grid">
-    <div class="loading" style="grid-column:1/-1">Cargando colección...</div>
+    <!-- skeleton -->
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="height:10px;width:40%;margin-bottom:12px"></div><div class="skeleton-line" style="height:22px;width:75%"></div><div class="skeleton-line" style="height:10px;width:55%;margin-top:10px"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="height:10px;width:35%;margin-bottom:12px"></div><div class="skeleton-line" style="height:22px;width:80%"></div><div class="skeleton-line" style="height:10px;width:50%;margin-top:10px"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="height:10px;width:45%;margin-bottom:12px"></div><div class="skeleton-line" style="height:22px;width:65%"></div><div class="skeleton-line" style="height:10px;width:60%;margin-top:10px"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="height:10px;width:30%;margin-bottom:12px"></div><div class="skeleton-line" style="height:22px;width:70%"></div><div class="skeleton-line" style="height:10px;width:45%;margin-top:10px"></div></div></div>
   </div>
 </main>
 
 <!-- ENCARGOS -->
-<section style="padding: 0 24px 80px; max-width: 1100px; margin: 0 auto;">
-  <div style="
-    border: 1px solid rgba(201,168,76,0.3);
-    background: rgba(201,168,76,0.04);
-    padding: 40px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  ">
-    <div style="
-      position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--dorado), transparent);
-    "></div>
-    <div style="font-size: 28px; margin-bottom: 12px;">✦</div>
-    <h2 style="
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(22px, 4vw, 32px);
-      font-weight: 400;
-      color: var(--dorado);
-      letter-spacing: 2px;
-      margin-bottom: 12px;
-    ">¿Quieres un encargo?</h2>
-    <p style="
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      font-weight: 300;
-      letter-spacing: 0.5px;
-      line-height: 1.8;
-      max-width: 480px;
-      margin: 0 auto 28px;
-    ">¿Buscas un perfume en específico o quieres adquirir el frasco completo?<br>Consúltame, con gusto te ayudo a conseguirlo.</p>
-    <a href="https://wa.me/528771287351?text=Hola%20Aromantic!%20Me%20gustar%C3%ADa%20hacer%20un%20encargo%20especial%20%F0%9F%8C%BF" target="_blank" style="
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 32px;
-      background: var(--dorado);
-      color: var(--negro);
-      text-decoration: none;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      transition: opacity 0.2s;
-    " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <svg style="width:16px;height:16px;flex-shrink:0" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<section class="encargos">
+  <div class="encargos-box">
+    <span class="encargos-symbol">✦</span>
+    <h2 class="encargos-title">¿Quieres un encargo?</h2>
+    <p class="encargos-desc">¿Buscas una fragancia específica o quieres adquirir el frasco completo?<br>Consúltame, con gusto te ayudo a conseguirlo.</p>
+    <a class="btn-encargo"
+       href="https://wa.me/528771287351?text=Hola%20Aromantic!%20Me%20gustar%C3%ADa%20hacer%20un%20encargo%20especial%20%F0%9F%8C%BF"
+       target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
       Consultar encargo
     </a>
   </div>
@@ -578,124 +858,247 @@
 <footer class="footer">
   <div class="footer-logo">AROMANTIC</div>
   <div class="footer-links">
-    <a class="footer-link" href="https://wa.me/528771287351" target="_blank">
+    <a class="footer-link" href="https://wa.me/528771287351" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       877 128 7351
     </a>
-    <a class="footer-link" href="https://www.instagram.com/aromantic_jmx" target="_blank">
+    <a class="footer-link" href="https://www.instagram.com/aromantic_jmx" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
       @aromantic_jmx
     </a>
   </div>
   <p class="footer-copy">© 2026 Aromantic · Decants &amp; Perfumes por Encargo</p>
-  <p class="footer-copy" style="margin-top:6px; color: rgba(255,255,255,0.1);">Creado by Ing. Librado 2026</p>
+  <p class="footer-copy" style="margin-top:5px">Creado by Ing. Librado 2026</p>
 </footer>
 
+<!-- BACK TO TOP -->
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
 <script>
+/* ══════════════════════════════
+   CONFIG
+══════════════════════════════ */
 const SUPABASE_URL = "https://kgrwrordxxuzwuiuwdog.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtncndyb3JkeHh1end1aXV3ZG9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjA1ODQsImV4cCI6MjA5MTU5NjU4NH0.5i8WzMx-CUwSypRZq5V9fQDoc0KnYh-UGKSRcXvhkDs";
+const WA = "528771287351";
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const WA = "528771287351";
-let todos = [];
-let filtroActivo = "todos";
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let todos        = [];
 let seleccionados = {};
+let filtroGenero  = "todos";
+let filtroTemp    = "todos";
 
+/* ══════════════════════════════
+   CARGA
+══════════════════════════════ */
 async function cargar() {
-  const { data: perfumes } = await db.from("perfumes").select("*").eq("activo", true).order("marca");
-  const { data: precios } = await db.from("precios").select("*").eq("disponible", true);
+  try {
+    const [perfumesRes, preciosRes] = await Promise.all([
+      db.from("perfumes").select("*").eq("activo", true).order("marca"),
+      db.from("precios").select("*").eq("disponible", true)
+    ]);
 
-  todos = perfumes.map(p => ({
-    ...p,
-    precios: precios.filter(pr => pr.perfume_id === p.id).sort((a,b) => parseFloat(a.tamano) - parseFloat(b.tamano))
-  }));
+    if (perfumesRes.error) throw perfumesRes.error;
 
-  renderizar();
+    const precios = preciosRes.data ?? [];
+
+    todos = (perfumesRes.data ?? []).map(p => ({
+      ...p,
+      precios: precios
+        .filter(pr => pr.perfume_id === p.id)
+        .sort((a, b) => parseFloat(a.tamano) - parseFloat(b.tamano))
+    }));
+
+    renderizar();
+
+  } catch (err) {
+    console.error("[Catalogo] Error:", err);
+    mostrarError();
+  }
 }
 
-function setFiltro(f, btn) {
-  filtroActivo = f;
-  document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
+/* ══════════════════════════════
+   FILTROS
+══════════════════════════════ */
+function setFiltro(tipo, val, btn) {
+  if (tipo === "genero") {
+    filtroGenero = val;
+    document.querySelectorAll("[data-filtro='genero']").forEach(b => b.classList.remove("active"));
+  } else {
+    filtroTemp = val;
+    document.querySelectorAll("[data-filtro='temp']").forEach(b => b.classList.remove("active"));
+  }
   btn.classList.add("active");
   renderizar();
 }
 
 function filtrar() { renderizar(); }
 
+/* ══════════════════════════════
+   RENDER
+══════════════════════════════ */
 function renderizar() {
-  const busqueda = document.getElementById("busqueda").value.toLowerCase();
+  const q = document.getElementById("busqueda").value.toLowerCase().trim();
   const grid = document.getElementById("grid");
 
-  let items = todos.filter(p => {
-    const matchFiltro = filtroActivo === "todos" || p.genero === filtroActivo;
-    const matchBusqueda = !busqueda ||
-      p.nombre.toLowerCase().includes(busqueda) ||
-      p.marca.toLowerCase().includes(busqueda) ||
-      (p.familia_olfativa || "").toLowerCase().includes(busqueda);
-    return matchFiltro && matchBusqueda;
+  const items = todos.filter(p => {
+    const mG = filtroGenero === "todos" || p.genero === filtroGenero;
+    const mT = filtroTemp   === "todos" || p.temporada === filtroTemp;
+    const mQ = !q
+      || (p.nombre || "").toLowerCase().includes(q)
+      || (p.marca  || "").toLowerCase().includes(q)
+      || (p.familia_olfativa || "").toLowerCase().includes(q);
+    return mG && mT && mQ;
   });
 
-  if (items.length === 0) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">No se encontraron fragancias</div>`;
+  // Counter
+  const counter = document.getElementById("nav-counter");
+  if (todos.length) {
+    counter.innerHTML = items.length === todos.length
+      ? `<strong>${todos.length}</strong> fragancias`
+      : `<strong>${items.length}</strong> de ${todos.length}`;
+  }
+
+  if (!items.length) {
+    grid.innerHTML = renderVacio(q);
     return;
   }
 
-  grid.innerHTML = items.map((p, i) => {
-    const tempEmoji = p.temporada === "frio" ? "❄️" : p.temporada === "calor" ? "☀️" : "✦";
-    const foto = p.foto_url
-      ? `<img src="${p.foto_url}" alt="${p.nombre}" loading="lazy"/>`
-      : `<span class="placeholder">🌿</span>`;
-    const sel = seleccionados[p.id];
+  const tempMap = { frio: "❄️", calor: "☀️", "todo el año": "✦" };
 
-    const preciosHtml = p.precios.map(pr => `
-      <div class="precio-item ${sel === pr.id ? 'selected' : ''}" onclick="seleccionar('${p.id}','${pr.id}'); event.stopPropagation()">
-        <span class="precio-ml">${pr.tamano}</span>
-        <span class="precio-val">$${parseFloat(pr.precio).toFixed(0)}</span>
-      </div>
-    `).join("");
+  grid.innerHTML = items.map((p, i) => {
+    const delay    = Math.min(i * 0.06, 0.42);
+    const tempIcon = tempMap[p.temporada] || "✦";
+    const sel      = seleccionados[p.id];
+
+    const fotoHtml = p.foto_url
+      ? `<img
+           src="${esc(p.foto_url)}"
+           alt="${esc(p.nombre)}"
+           loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         />
+         <span class="placeholder" style="display:none">🌿</span>`
+      : `<span class="placeholder">🌿</span>`;
+
+    const preciosHtml = p.precios.length
+      ? p.precios.map(pr => `
+          <div
+            class="precio-item${sel === pr.id ? " selected" : ""}"
+            data-perfume="${p.id}"
+            data-precio="${pr.id}"
+            onclick="seleccionar('${p.id}','${pr.id}',event)"
+          >
+            <span class="precio-ml">${esc(pr.tamano)}</span>
+            <span class="precio-val">$${parseFloat(pr.precio).toFixed(0)}</span>
+          </div>`).join("")
+      : `<div style="font-size:11px;color:var(--white-30);letter-spacing:0.5px;padding:4px 0">Consultar precio</div>`;
 
     return `
-      <div class="card" style="animation-delay:${i*0.07}s">
+      <div class="card" style="animation-delay:${delay}s">
         <div class="card-img">
-          ${foto}
-          <span class="badge-genero badge-${p.genero}">${p.genero}</span>
-          <span class="badge-temp" title="${p.temporada}">${tempEmoji}</span>
+          ${fotoHtml}
+          <span class="badge-genero badge-${esc(p.genero)}">${esc(p.genero)}</span>
+          <span class="badge-temp" title="${esc(p.temporada || '')}">${tempIcon}</span>
         </div>
         <div class="card-body">
-          <div class="card-marca">${p.marca}</div>
-          <div class="card-nombre">${p.nombre}</div>
-          ${p.familia_olfativa ? `<div class="card-familia">${p.familia_olfativa}</div>` : ""}
+          <div class="card-marca">${esc(p.marca)}</div>
+          <div class="card-nombre">${esc(p.nombre)}</div>
+          ${p.familia_olfativa ? `<div class="card-familia">${esc(p.familia_olfativa)}</div>` : ""}
           <div class="precios">${preciosHtml}</div>
-          <button class="btn-pedir" onclick="pedir('${p.id}','${p.nombre}','${p.marca}')">
+          <button class="btn-pedir" onclick="pedir('${p.id}','${esc(p.nombre)}','${esc(p.marca)}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
             Pedir por WhatsApp
           </button>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join("");
 }
 
-function seleccionar(perfumeId, precioId) {
+/* ══════════════════════════════
+   SELECCIONAR PRECIO — sin re-render
+══════════════════════════════ */
+function seleccionar(perfumeId, precioId, e) {
+  e.stopPropagation();
   seleccionados[perfumeId] = precioId;
-  renderizar();
+
+  // Solo actualiza el DOM de esta card
+  document.querySelectorAll(`[data-perfume="${perfumeId}"]`).forEach(el => {
+    el.classList.toggle("selected", el.dataset.precio === precioId);
+  });
 }
 
+/* ══════════════════════════════
+   PEDIR
+══════════════════════════════ */
 function pedir(perfumeId, nombre, marca) {
   const perfume = todos.find(p => p.id === perfumeId);
-  const selId = seleccionados[perfumeId];
-  const precio = selId ? perfume.precios.find(pr => pr.id === selId) : null;
+  const selId   = seleccionados[perfumeId];
+  const precio  = selId ? perfume?.precios.find(pr => pr.id === selId) : null;
 
-  let msg;
-  if (precio) {
-    msg = `Hola Aromantic! Me interesa:\n\n🌿 *${marca} - ${nombre}*\n📦 Tamaño: ${precio.tamano}\n💰 Precio: $${parseFloat(precio.precio).toFixed(0)}\n\n¿Está disponible?`;
-  } else {
-    msg = `Hola Aromantic! Me interesa:\n\n🌿 *${marca} - ${nombre}*\n\n¿Cuáles tamaños tienen disponibles?`;
-  }
+  const msg = precio
+    ? `Hola Aromantic! Me interesa:\n\n🌿 *${marca} - ${nombre}*\n📦 Tamaño: ${precio.tamano}\n💰 Precio: $${parseFloat(precio.precio).toFixed(0)}\n\n¿Está disponible?`
+    : `Hola Aromantic! Me interesa:\n\n🌿 *${marca} - ${nombre}*\n\n¿Cuáles tamaños tienen disponibles?`;
 
-  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, "_blank");
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
 }
 
+/* ══════════════════════════════
+   ESTADOS
+══════════════════════════════ */
+function renderVacio(q) {
+  return `<div class="estado-vacio">
+    <div class="estado-vacio-symbol">AR</div>
+    <h3>${q ? "Sin resultados" : "Sin fragancias"}</h3>
+    <p>${q ? `No encontramos "${q}" en el catálogo` : "No hay fragancias disponibles con este filtro"}</p>
+  </div>`;
+}
+
+function mostrarError() {
+  document.getElementById("grid").innerHTML = `
+    <div class="estado-error">
+      <div class="estado-error-icon">✦</div>
+      <h3>No pudimos cargar el catálogo</h3>
+      <p>Verifica tu conexión e intenta de nuevo.<br>Si el problema persiste, contáctanos por WhatsApp.</p>
+      <button class="btn-retry" onclick="location.reload()">Reintentar</button>
+    </div>`;
+  document.getElementById("nav-counter").innerHTML = "";
+}
+
+/* ══════════════════════════════
+   BACK TO TOP
+══════════════════════════════ */
+const backTop = document.getElementById("back-top");
+window.addEventListener("scroll", () => {
+  backTop.classList.toggle("visible", window.scrollY > 420);
+}, { passive: true });
+
+/* ══════════════════════════════
+   HELPERS
+══════════════════════════════ */
+function esc(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
 cargar();
 </script>
 </body>
