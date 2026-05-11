@@ -3,106 +3,159 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Aromantic — Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<title>Aromantic — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
 :root {
-  --bg:  #0a0a0a;
-  --bg2: #111111;
-  --bg3: #161616;
-  --bg4: #1d1d1d;
-  --gold: #C9A84C;
-  --gold-dim: rgba(201,168,76,0.1);
-  --gold-border: rgba(201,168,76,0.22);
-  --white: #f5f5f0;
-  --muted: rgba(255,255,255,0.38);
-  --border: rgba(255,255,255,0.06);
-  --error: #e05555;
-  --success: #4caf77;
-  --sidebar-w: 232px;
-  --topbar-h: 56px;
-  --r: 3px;
-  --font-sans: "Montserrat", sans-serif;
-  --font-serif: "Cormorant Garamond", serif;
+  --bg:          #080808;
+  --bg2:         #0f0f0f;
+  --bg3:         #141414;
+  --bg4:         #1a1a1a;
+  --bg5:         #222222;
+  --gold:        #C9A84C;
+  --gold-l:      #E2C06C;
+  --gold-dim:    rgba(201,168,76,0.08);
+  --gold-dim2:   rgba(201,168,76,0.14);
+  --gold-border: rgba(201,168,76,0.2);
+  --white:       #f0f0eb;
+  --white-70:    rgba(240,240,235,0.7);
+  --white-40:    rgba(240,240,235,0.4);
+  --white-20:    rgba(240,240,235,0.2);
+  --white-08:    rgba(240,240,235,0.08);
+  --white-04:    rgba(240,240,235,0.04);
+  --white-02:    rgba(240,240,235,0.02);
+  --red:         #d95f5f;
+  --red-dim:     rgba(217,95,95,0.1);
+  --red-border:  rgba(217,95,95,0.22);
+  --green:       #52a877;
+  --green-dim:   rgba(82,168,119,0.1);
+  --green-border:rgba(82,168,119,0.22);
+  --sidebar-w:   240px;
+  --topbar-h:    52px;
+  --r:           2px;
+  --sans:        "Montserrat", sans-serif;
+  --serif:       "Cormorant Garamond", serif;
+  --shadow:      0 8px 32px rgba(0,0,0,0.4);
+  --shadow-sm:   0 2px 12px rgba(0,0,0,0.3);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   background: var(--bg);
   color: var(--white);
   min-height: 100vh;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ═══════════════════
-   LOGIN
-═══════════════════ */
+/* ═══════════════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════════════ */
 #screen-login {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: radial-gradient(ellipse at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 65%);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.05) 0%, transparent 70%),
+    var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+#screen-login::before {
+  content: "AR";
+  position: absolute;
+  font-family: var(--serif);
+  font-size: 40vw;
+  font-weight: 300;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201,168,76,0.025);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -20px;
+  white-space: nowrap;
 }
 
 .login-card {
   width: 100%;
-  max-width: 356px;
+  max-width: 360px;
   background: var(--bg2);
   border: 1px solid var(--gold-border);
   padding: 48px 40px 44px;
   border-radius: var(--r);
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
 .login-logo {
-  font-family: var(--font-serif);
-  font-size: 56px;
+  font-family: var(--serif);
+  font-size: 68px;
   font-weight: 300;
   color: transparent;
   -webkit-text-stroke: 1px var(--gold);
   text-align: center;
   line-height: 1;
+  letter-spacing: -2px;
 }
 
 .login-sub {
   text-align: center;
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 5px;
   color: var(--gold);
   text-transform: uppercase;
-  margin: 4px 0 36px;
+  margin: 6px 0 40px;
+  opacity: 0.7;
 }
 
 .field { margin-bottom: 14px; }
 
 .field label {
   display: block;
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 7px;
+  color: var(--white-40);
+  margin-bottom: 8px;
 }
 
 .field input {
   width: 100%;
   padding: 11px 14px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--white-04);
+  border: 1px solid var(--white-08);
   color: var(--white);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: 13px;
   outline: none;
   border-radius: var(--r);
   transition: border-color 0.2s;
 }
 
-.field input:focus { border-color: var(--gold); }
+.field input:focus { border-color: var(--gold-border); }
+.field input::placeholder { color: var(--white-20); }
 
 .btn-primary {
   width: 100%;
@@ -110,147 +163,150 @@ body {
   background: var(--gold);
   border: none;
   color: var(--bg);
-  font-family: var(--font-sans);
-  font-size: 10.5px;
+  font-family: var(--sans);
+  font-size: 9.5px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s;
-  margin-top: 8px;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 10px;
   border-radius: var(--r);
 }
 
-.btn-primary:hover { opacity: 0.86; }
-.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:active { transform: scale(0.99); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .login-err {
-  color: var(--error);
+  color: var(--red);
   font-size: 11px;
   text-align: center;
-  margin-top: 12px;
+  margin-top: 14px;
   min-height: 14px;
   letter-spacing: 0.3px;
 }
 
-/* ═══════════════════
+/* ═══════════════════════════════════════
    ADMIN SHELL
-═══════════════════ */
+═══════════════════════════════════════ */
 #screen-admin { display: none; min-height: 100vh; }
-
 .admin-layout { display: flex; min-height: 100vh; }
 
-/* SIDEBAR */
+/* ─── SIDEBAR ─── */
 .sidebar {
   width: var(--sidebar-w);
   min-height: 100vh;
   background: var(--bg2);
-  border-right: 1px solid var(--border);
+  border-right: 1px solid rgba(255,255,255,0.045);
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   position: fixed;
   top: 0; left: 0;
   z-index: 200;
-  transition: transform 0.25s ease;
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1);
 }
 
 .sidebar-brand {
-  padding: 22px 20px 18px;
-  border-bottom: 1px solid var(--border);
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.045);
 }
 
-.sidebar-logo-text {
-  font-family: var(--font-serif);
-  font-size: 28px;
+.sidebar-logo {
+  font-family: var(--serif);
+  font-size: 30px;
   font-weight: 300;
   color: transparent;
   -webkit-text-stroke: 1px var(--gold);
   line-height: 1;
-  display: block;
+  letter-spacing: -1px;
 }
 
 .sidebar-brand-sub {
-  font-size: 7.5px;
-  letter-spacing: 3.5px;
-  color: rgba(255,255,255,0.2);
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--white-20);
   text-transform: uppercase;
-  margin-top: 3px;
+  margin-top: 4px;
   display: block;
 }
 
 .sidebar-nav {
-  padding: 14px 10px;
+  padding: 12px 8px;
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1px;
+  overflow-y: auto;
 }
 
 .nav-group-label {
-  font-size: 7.5px;
+  font-size: 7px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.15);
   padding: 10px 10px 5px;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 9px 11px;
   border-radius: var(--r);
   cursor: pointer;
   transition: all 0.14s;
-  color: var(--muted);
-  font-size: 12.5px;
+  color: var(--white-40);
+  font-size: 12px;
   letter-spacing: 0.2px;
   border: 1px solid transparent;
   user-select: none;
+  position: relative;
 }
 
-.nav-item svg { flex-shrink: 0; opacity: 0.55; }
-.nav-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.75); }
-.nav-item:hover svg { opacity: 0.85; }
+.nav-item .nav-icon { flex-shrink: 0; opacity: 0.5; transition: opacity 0.14s; }
+.nav-item:hover { background: var(--white-04); color: var(--white-70); }
+.nav-item:hover .nav-icon { opacity: 0.9; }
 
 .nav-item.active {
   background: var(--gold-dim);
   border-color: var(--gold-border);
   color: var(--gold);
 }
-.nav-item.active svg { opacity: 1; }
+.nav-item.active .nav-icon { opacity: 1; }
 
 .nav-item.disabled {
-  opacity: 0.28;
+  opacity: 0.25;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.nav-soon {
-  font-size: 8px;
-  letter-spacing: 1px;
-  padding: 2px 5px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 2px;
-  color: rgba(255,255,255,0.25);
+.nav-badge {
   margin-left: auto;
+  font-size: 7.5px;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  background: var(--white-04);
+  border: 1px solid var(--white-08);
+  border-radius: 2px;
+  color: var(--white-20);
   text-transform: uppercase;
 }
 
 .sidebar-footer {
-  padding: 14px 10px;
-  border-top: 1px solid var(--border);
+  padding: 12px 8px;
+  border-top: 1px solid rgba(255,255,255,0.045);
 }
 
 .user-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  margin-bottom: 8px;
+  padding: 8px 11px;
+  margin-bottom: 6px;
   border-radius: var(--r);
+  background: var(--white-02);
 }
 
 .user-avatar {
@@ -265,40 +321,35 @@ body {
   font-size: 11px;
   color: var(--gold);
   flex-shrink: 0;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.user-email {
-  font-size: 11px;
-  color: rgba(255,255,255,0.3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-}
+.user-info { flex: 1; overflow: hidden; }
+.user-name { font-size: 11.5px; color: var(--white-70); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { font-size: 9px; letter-spacing: 1px; color: var(--gold); text-transform: uppercase; opacity: 0.7; }
 
 .btn-logout {
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 11px;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.3);
-  font-family: var(--font-sans);
-  font-size: 10px;
+  border: 1px solid var(--white-08);
+  color: var(--white-40);
+  font-family: var(--sans);
+  font-size: 9.5px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
   border-radius: var(--r);
-  transition: all 0.2s;
+  transition: all 0.18s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
 }
 
-.btn-logout:hover { border-color: var(--error); color: var(--error); }
+.btn-logout:hover { border-color: var(--red-border); color: var(--red); }
 
-/* MAIN */
+/* ─── MAIN ─── */
 .main-area {
   margin-left: var(--sidebar-w);
   flex: 1;
@@ -311,11 +362,11 @@ body {
 .topbar {
   height: var(--topbar-h);
   background: var(--bg2);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.045);
   display: flex;
   align-items: center;
-  padding: 0 28px;
-  gap: 10px;
+  padding: 0 24px;
+  gap: 12px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -325,9 +376,9 @@ body {
   display: none;
   background: none;
   border: none;
-  color: var(--muted);
+  color: var(--white-40);
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
   border-radius: var(--r);
   transition: color 0.15s;
 }
@@ -336,145 +387,181 @@ body {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 11.5px;
-  color: rgba(255,255,255,0.25);
+  gap: 8px;
+  font-size: 11px;
+  color: var(--white-20);
+  letter-spacing: 0.3px;
 }
 
-.breadcrumb-sep { opacity: 0.5; font-size: 13px; }
-.breadcrumb-current { color: rgba(255,255,255,0.7); font-weight: 500; }
+.breadcrumb-sep { font-size: 14px; }
+.breadcrumb-current { color: var(--white-70); font-weight: 500; }
 
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+}
 
 .status-pill {
-  font-size: 9.5px;
-  letter-spacing: 1.5px;
-  padding: 4px 11px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 4px 12px;
   border-radius: 100px;
   background: var(--gold-dim);
   border: 1px solid var(--gold-border);
   color: var(--gold);
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* CONTENT */
-.content {
-  padding: 32px 28px 72px;
-  flex: 1;
-}
+.content { padding: 28px 24px 72px; flex: 1; }
 
 .view { display: none; }
-.view.active { display: block; }
+.view.active { display: block; animation: viewIn 0.22s ease; }
 
-/* ═══════════════════
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
    PAGE HEADER
-═══════════════════ */
-.page-header { margin-bottom: 28px; }
+═══════════════════════════════════════ */
+.page-header {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-title-group {}
 
 .page-title {
-  font-family: var(--font-serif);
-  font-size: 30px;
+  font-family: var(--serif);
+  font-size: 34px;
   font-weight: 300;
   color: var(--white);
   letter-spacing: 0.5px;
+  line-height: 1;
 }
 
 .page-subtitle {
   font-size: 11px;
-  color: var(--muted);
-  margin-top: 4px;
+  color: var(--white-40);
+  margin-top: 5px;
   letter-spacing: 0.3px;
 }
 
-/* ═══════════════════
-   DASHBOARD
-═══════════════════ */
+/* ═══════════════════════════════════════
+   STATS
+═══════════════════════════════════════ */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin-bottom: 28px;
 }
 
 .stat-card {
   background: var(--bg2);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: var(--r);
-  padding: 20px 22px 18px;
-  transition: border-color 0.2s;
+  padding: 20px 20px 18px;
   position: relative;
   overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s;
+  cursor: default;
 }
 
-.stat-card::before {
+.stat-card:hover { border-color: var(--gold-border); transform: translateY(-1px); }
+
+.stat-card::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  bottom: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.1), transparent);
 }
 
-.stat-card:hover { border-color: var(--gold-border); }
-
 .stat-label {
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
+  color: var(--white-20);
   margin-bottom: 10px;
 }
 
 .stat-value {
-  font-family: var(--font-serif);
-  font-size: 40px;
+  font-family: var(--serif);
+  font-size: 44px;
   font-weight: 300;
   line-height: 1;
-  color: var(--white);
 }
 
-.stat-value.c-gold   { color: var(--gold); }
-.stat-value.c-green  { color: var(--success); }
-.stat-value.c-red    { color: var(--error); }
-.stat-value.c-white  { color: var(--white); }
+.stat-value.gold  { color: var(--gold); }
+.stat-value.green { color: var(--green); }
+.stat-value.red   { color: var(--red); }
+.stat-value.white { color: var(--white); }
 
 .stat-sub {
   font-size: 10px;
-  color: rgba(255,255,255,0.2);
-  margin-top: 7px;
+  color: var(--white-20);
+  margin-top: 8px;
   letter-spacing: 0.3px;
 }
 
+.stat-trend {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  opacity: 0.15;
+  font-size: 32px;
+}
+
+/* ═══════════════════════════════════════
+   SECTION TITLE
+═══════════════════════════════════════ */
 .section-title {
-  font-size: 9px;
+  font-size: 8.5px;
   letter-spacing: 4px;
   color: var(--gold);
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 14px;
+  opacity: 0.8;
 }
 
 .section-title::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, rgba(201,168,76,0.25), transparent);
+  background: linear-gradient(90deg, rgba(201,168,76,0.2), transparent);
 }
 
-/* ═══════════════════
+/* ═══════════════════════════════════════
    TABLE CARD
-═══════════════════ */
+═══════════════════════════════════════ */
 .table-card {
   background: var(--bg2);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: var(--r);
   overflow: hidden;
 }
 
 .table-card-header {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.045);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -484,7 +571,7 @@ body {
 
 .table-count {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--white-40);
 }
 
 .table-wrap { overflow-x: auto; }
@@ -493,114 +580,120 @@ table { width: 100%; border-collapse: collapse; }
 
 th {
   text-align: left;
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.22);
-  padding: 11px 16px;
-  border-bottom: 1px solid var(--border);
+  color: rgba(255,255,255,0.18);
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.045);
   font-weight: 500;
   white-space: nowrap;
 }
 
 td {
-  padding: 13px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  color: rgba(255,255,255,0.62);
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.025);
+  color: var(--white-40);
   vertical-align: middle;
+  font-size: 12.5px;
 }
 
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.013); }
+tr:hover td { background: var(--white-02); }
 
 .td-foto {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   object-fit: cover;
   border-radius: var(--r);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.05);
   display: block;
 }
 
 .td-foto-ph {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   background: var(--bg3);
   border-radius: var(--r);
+  border: 1px solid rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  border: 1px solid var(--border);
+  font-size: 16px;
 }
 
-.td-nombre { font-family: var(--font-serif); font-size: 16px; color: var(--white); line-height: 1.15; }
-.td-marca  { font-size: 10px; letter-spacing: 1px; color: var(--gold); opacity: 0.75; margin-top: 2px; }
+.td-nombre { font-family: var(--serif); font-size: 17px; color: var(--white); line-height: 1.15; }
+.td-marca  { font-size: 9px; letter-spacing: 1.5px; color: var(--gold); opacity: 0.65; margin-top: 2px; text-transform: uppercase; }
 
-.precio { font-size: 13px; color: rgba(255,255,255,0.68); font-variant-numeric: tabular-nums; }
-.precio-na { color: rgba(255,255,255,0.18); font-size: 13px; }
+.precio    { font-size: 12.5px; color: var(--white-70); font-variant-numeric: tabular-nums; }
+.precio-na { color: var(--white-20); font-size: 12.5px; }
 
 .badge {
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 1px;
-  padding: 3px 9px;
+  padding: 3px 8px;
   border-radius: 100px;
   text-transform: uppercase;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.b-active  { background: rgba(76,175,119,0.1); border: 1px solid rgba(76,175,119,0.22); color: var(--success); }
-.b-hidden  { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); }
-.b-gender  { background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.14); color: rgba(201,168,76,0.65); }
+.b-active  { background: var(--green-dim); border: 1px solid var(--green-border); color: var(--green); }
+.b-hidden  { background: var(--white-04); border: 1px solid var(--white-08); color: var(--white-40); }
+.b-gender  { background: var(--gold-dim); border: 1px solid var(--gold-border); color: rgba(201,168,76,0.75); }
+.b-active::before  { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--green); }
+.b-hidden::before  { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--white-40); }
 
-.row-actions { display: flex; gap: 6px; }
+.row-actions { display: flex; gap: 5px; }
 
 .btn-xs {
-  padding: 5px 12px;
+  padding: 5px 11px;
   border-radius: var(--r);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 0.4px;
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.14s;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
 
-.btn-xs-gold { border-color: rgba(201,168,76,0.25); background: transparent; color: var(--gold); }
-.btn-xs-gold:hover { background: var(--gold-dim); }
+.btn-xs-gold  { border-color: rgba(201,168,76,0.22); background: transparent; color: var(--gold); }
+.btn-xs-gold:hover { background: var(--gold-dim2); }
 
-.btn-xs-ghost { border-color: rgba(255,255,255,0.08); background: transparent; color: var(--muted); }
-.btn-xs-ghost:hover { border-color: var(--error); color: var(--error); }
+.btn-xs-ghost { border-color: var(--white-08); background: transparent; color: var(--white-40); }
+.btn-xs-ghost:hover { border-color: var(--red-border); color: var(--red); background: var(--red-dim); }
+
+.btn-xs-green { border-color: var(--green-border); background: transparent; color: var(--green); }
+.btn-xs-green:hover { background: var(--green-dim); }
 
 /* EMPTY */
-.tbl-empty {
-  text-align: center;
-  padding: 52px 20px;
-}
-.tbl-empty-icon { font-size: 32px; margin-bottom: 10px; }
-.tbl-empty-text { font-family: var(--font-serif); font-size: 18px; color: rgba(255,255,255,0.22); }
-.tbl-empty-sub  { font-size: 11px; color: rgba(255,255,255,0.14); margin-top: 4px; }
+.tbl-empty { text-align: center; padding: 60px 20px; }
+.tbl-empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
+.tbl-empty-text { font-family: var(--serif); font-size: 20px; color: var(--white-20); }
+.tbl-empty-sub  { font-size: 11px; color: var(--white-20); margin-top: 4px; opacity: 0.7; }
 
 /* PAGINATION */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  border-top: 1px solid var(--border);
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,0.045);
 }
 
-.page-info { font-size: 11px; color: rgba(255,255,255,0.28); }
-.page-btns { display: flex; gap: 4px; }
+.page-info { font-size: 11px; color: var(--white-20); }
+.page-btns { display: flex; gap: 3px; }
 
 .page-btn {
   width: 28px;
   height: 28px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.06);
   background: transparent;
-  color: var(--muted);
-  font-family: var(--font-sans);
+  color: var(--white-40);
+  font-family: var(--sans);
   font-size: 11.5px;
   cursor: pointer;
   border-radius: var(--r);
@@ -612,41 +705,37 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 
 .page-btn:hover   { border-color: var(--gold-border); color: var(--gold); }
 .page-btn.active  { background: var(--gold-dim); border-color: var(--gold-border); color: var(--gold); }
-.page-btn:disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+.page-btn:disabled { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
 
-/* ═══════════════════
+/* ═══════════════════════════════════════
    TOOLBAR
-═══════════════════ */
+═══════════════════════════════════════ */
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
-.search-wrap {
-  position: relative;
-  flex: 1;
-  min-width: 200px;
-}
+.search-wrap { position: relative; flex: 1; min-width: 200px; }
 
-.search-wrap .search-ico {
+.search-ico {
   position: absolute;
   left: 11px;
   top: 50%;
   transform: translateY(-50%);
-  opacity: 0.28;
+  opacity: 0.25;
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  padding: 9px 14px 9px 34px;
+  padding: 9px 13px 9px 34px;
   background: var(--bg2);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.06);
   color: var(--white);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: 12.5px;
   outline: none;
   border-radius: var(--r);
@@ -654,87 +743,98 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 }
 
 .search-input:focus { border-color: var(--gold-border); }
-.search-input::placeholder { color: rgba(255,255,255,0.2); }
+.search-input::placeholder { color: var(--white-20); }
 
 .filter-sel {
-  padding: 9px 11px;
+  padding: 9px 10px;
   background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: var(--font-sans);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--white-40);
+  font-family: var(--sans);
   font-size: 11.5px;
   outline: none;
   border-radius: var(--r);
   cursor: pointer;
   transition: border-color 0.2s;
+  appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.25)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
 }
 
 .filter-sel:focus { border-color: var(--gold-border); }
-.filter-sel option { background: #1a1a1a; }
+.filter-sel option { background: #1a1a1a; color: #f0f0eb; }
 
 .btn-add {
-  padding: 9px 18px;
-  background: transparent;
-  border: 1px solid var(--gold-border);
-  color: var(--gold);
-  font-family: var(--font-sans);
-  font-size: 10px;
+  padding: 9px 16px;
+  background: var(--gold);
+  border: none;
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 9.5px;
   letter-spacing: 2px;
   text-transform: uppercase;
+  font-weight: 700;
   cursor: pointer;
   border-radius: var(--r);
-  transition: all 0.2s;
+  transition: opacity 0.2s, transform 0.1s;
   white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.btn-add:hover { background: var(--gold-dim); }
+.btn-add:hover { opacity: 0.88; }
+.btn-add:active { transform: scale(0.98); }
 
-/* ═══════════════════
+/* ═══════════════════════════════════════
    DRAWER
-═══════════════════ */
+═══════════════════════════════════════ */
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.58);
+  background: rgba(0,0,0,0.65);
   z-index: 400;
   display: none;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.drawer-overlay.open { display: block; }
+.drawer-overlay.open { display: block; animation: overlayIn 0.22s ease; }
+
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
 
 .drawer {
   position: fixed;
-  top: 0;
-  right: -520px;
+  top: 0; right: -520px;
   width: 100%;
-  max-width: 488px;
+  max-width: 500px;
   height: 100vh;
   background: var(--bg2);
-  border-left: 1px solid var(--border);
+  border-left: 1px solid rgba(255,255,255,0.06);
   z-index: 500;
-  transition: right 0.28s cubic-bezier(0.4,0,0.2,1);
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
   display: flex;
   flex-direction: column;
+  box-shadow: -20px 0 60px rgba(0,0,0,0.5);
 }
 
 .drawer.open { right: 0; }
 
 .drawer-header {
   padding: 18px 22px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  background: var(--bg3);
 }
 
 .drawer-title {
-  font-family: var(--font-serif);
-  font-size: 22px;
+  font-family: var(--serif);
+  font-size: 24px;
   font-weight: 300;
   color: var(--white);
 }
@@ -742,9 +842,9 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 .drawer-close {
   width: 30px;
   height: 30px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.07);
   background: transparent;
-  color: var(--muted);
+  color: var(--white-40);
   cursor: pointer;
   border-radius: var(--r);
   display: flex;
@@ -759,124 +859,162 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 
 .drawer-footer {
   padding: 14px 22px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255,255,255,0.05);
   display: flex;
   gap: 10px;
   justify-content: flex-end;
   flex-shrink: 0;
+  background: var(--bg3);
 }
 
 /* FORM */
-.frow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .frow.full  { grid-template-columns: 1fr; }
 .frow.three { grid-template-columns: 1fr 1fr 1fr; }
 
-.ff {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
+.ff { display: flex; flex-direction: column; gap: 7px; }
 
 .ff label {
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--white-40);
 }
 
-.ff.price label {
-  color: var(--gold);
-  opacity: 0.65;
-}
+.ff.price label { color: var(--gold); opacity: 0.7; }
 
 .ff input,
 .ff select,
 .ff textarea {
-  padding: 10px 13px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
+  padding: 10px 12px;
+  background: var(--white-04);
+  border: 1px solid var(--white-08);
   color: var(--white);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: 13px;
   outline: none;
   border-radius: var(--r);
   transition: border-color 0.2s;
 }
 
-.ff.price input {
-  background: var(--gold-dim);
-  border-color: rgba(201,168,76,0.14);
-}
+.ff.price input { background: var(--gold-dim); border-color: rgba(201,168,76,0.12); }
 
 .ff input:focus,
 .ff select:focus,
 .ff textarea:focus { border-color: var(--gold-border); }
 
+.ff input::placeholder,
+.ff textarea::placeholder { color: var(--white-20); }
+
+.ff select { appearance: none; cursor: pointer; }
 .ff select option { background: #1a1a1a; }
 .ff textarea { resize: vertical; min-height: 72px; }
 
-.divider { height: 1px; background: var(--border); margin: 18px 0; }
+/* Toggle activo dentro del drawer */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--white-02);
+  border: 1px solid var(--white-08);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+}
+
+.toggle-label { font-size: 12px; color: var(--white-70); }
+.toggle-sub   { font-size: 10px; color: var(--white-40); margin-top: 2px; }
+
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--bg5);
+  border: 1px solid var(--white-08);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 2px;
+  top: 2px;
+  background: var(--white-40);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-slider { background: var(--green-dim); border-color: var(--green-border); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--green); }
+
+.divider { height: 1px; background: rgba(255,255,255,0.05); margin: 18px 0; }
 
 .form-section-lbl {
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: 0.55;
+  opacity: 0.6;
   margin-bottom: 12px;
 }
 
 /* FOTO */
 .foto-box {
-  border: 1px dashed rgba(201,168,76,0.18);
+  border: 1px dashed rgba(201,168,76,0.15);
   border-radius: var(--r);
-  padding: 18px;
+  padding: 16px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 14px;
+  gap: 14px;
+  margin-bottom: 12px;
   transition: border-color 0.2s;
 }
 
-.foto-box:hover { border-color: rgba(201,168,76,0.32); }
+.foto-box:hover { border-color: rgba(201,168,76,0.28); }
 
 .foto-thumb {
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   border-radius: var(--r);
   object-fit: cover;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.05);
   flex-shrink: 0;
 }
 
 .foto-ph {
-  width: 68px;
-  height: 68px;
-  background: rgba(255,255,255,0.03);
+  width: 64px;
+  height: 64px;
+  background: var(--white-04);
   border-radius: var(--r);
+  border: 1px solid var(--white-08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
   flex-shrink: 0;
-  border: 1px solid var(--border);
 }
 
-.foto-side p { font-size: 11px; color: var(--muted); margin-bottom: 10px; line-height: 1.55; }
+.foto-side p { font-size: 11px; color: var(--white-40); margin-bottom: 8px; line-height: 1.6; }
 
 .btn-sm-outline {
-  padding: 7px 15px;
-  border: 1px solid rgba(201,168,76,0.28);
+  padding: 6px 14px;
+  border: 1px solid rgba(201,168,76,0.25);
   background: transparent;
   color: var(--gold);
-  font-family: var(--font-sans);
-  font-size: 10px;
+  font-family: var(--sans);
+  font-size: 9.5px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
@@ -886,79 +1024,158 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 
 .btn-sm-outline:hover { background: var(--gold-dim); }
 
-.foto-name { font-size: 10px; color: rgba(255,255,255,0.22); margin-left: 10px; }
+.foto-name { font-size: 10px; color: var(--white-20); margin-top: 5px; display: block; }
 
-/* FOOTER BTNS */
+/* FOOTER BTNs */
 .btn-cancel {
-  padding: 10px 20px;
-  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 18px;
+  border: 1px solid var(--white-08);
   background: transparent;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 10.5px;
+  color: var(--white-40);
+  font-family: var(--sans);
+  font-size: 9.5px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
   border-radius: var(--r);
-  transition: all 0.2s;
+  transition: all 0.18s;
 }
 
-.btn-cancel:hover { border-color: rgba(255,255,255,0.18); color: var(--white); }
+.btn-cancel:hover { border-color: var(--white-20); color: var(--white-70); }
 
 .btn-save {
-  padding: 10px 26px;
+  padding: 10px 24px;
   background: var(--gold);
   border: none;
   color: var(--bg);
-  font-family: var(--font-sans);
-  font-size: 10.5px;
+  font-family: var(--sans);
+  font-size: 9.5px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border-radius: var(--r);
-  transition: opacity 0.2s;
+  transition: opacity 0.18s;
 }
 
-.btn-save:hover { opacity: 0.86; }
-.btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-save:hover { opacity: 0.88; }
+.btn-save:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* TOAST */
+/* ═══════════════════════════════════════
+   CONFIRM MODAL
+═══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: overlayIn 0.18s ease;
+}
+
+.modal-box {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--r);
+  padding: 32px 30px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.modal-icon { font-size: 32px; margin-bottom: 14px; }
+.modal-title { font-family: var(--serif); font-size: 22px; color: var(--white); margin-bottom: 8px; }
+.modal-msg { font-size: 12px; color: var(--white-40); line-height: 1.6; margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+/* ═══════════════════════════════════════
+   LOADER
+═══════════════════════════════════════ */
+.loader-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-l));
+  z-index: 9999;
+  transition: width 0.3s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+/* SKELETON */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+  border-radius: var(--r);
+}
+
+@keyframes skeleton-wave {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
 #toast {
   position: fixed;
-  bottom: 28px;
+  bottom: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(70px);
+  transform: translateX(-50%) translateY(80px);
   background: var(--bg3);
-  border: 1px solid rgba(201,168,76,0.25);
+  border: 1px solid rgba(201,168,76,0.22);
   color: var(--white);
-  padding: 11px 22px;
+  padding: 11px 20px;
   font-size: 12px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
-  z-index: 900;
+  z-index: 1000;
   white-space: nowrap;
   border-radius: var(--r);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #toast.show  { transform: translateX(-50%) translateY(0); }
-#toast.ok    { border-color: rgba(76,175,119,0.4); color: var(--success); }
-#toast.error { border-color: rgba(224,85,85,0.4); color: var(--error); }
+#toast.ok    { border-color: var(--green-border); color: var(--green); }
+#toast.error { border-color: var(--red-border); color: var(--red); }
 
-/* SIDEBAR MOBILE OVERLAY */
+/* ═══════════════════════════════════════
+   MOBILE SIDEBAR OVERLAY
+═══════════════════════════════════════ */
 .sb-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.55);
   z-index: 199;
 }
 
-/* ═══════════════════
+/* ═══════════════════════════════════════
+   DASHBOARD EXTRAS
+═══════════════════════════════════════ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+/* ═══════════════════════════════════════
    RESPONSIVE
-═══════════════════ */
-@media (max-width: 960px) {
+═══════════════════════════════════════ */
+@media (max-width: 1024px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 700px) {
@@ -967,30 +1184,38 @@ tr:hover td { background: rgba(255,255,255,0.013); }
   .sb-overlay { display: block; }
   .main-area { margin-left: 0; }
   .hamburger { display: flex; }
-  .content { padding: 20px 16px 48px; }
-  .topbar { padding: 0 16px; }
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .content { padding: 18px 14px 48px; }
+  .topbar { padding: 0 14px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .frow { grid-template-columns: 1fr; }
   .frow.three { grid-template-columns: 1fr 1fr; }
   .drawer { max-width: 100%; }
-  th:nth-child(4), td:nth-child(4) { display: none; }
 }
 
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  th:nth-child(4), td:nth-child(4) { display: none; }
+}
+
+@media (max-width: 380px) {
   th:nth-child(3), td:nth-child(3) { display: none; }
 }
 </style>
 </head>
 <body>
 
+<!-- LOADER BAR -->
+<div class="loader-bar" id="loader-bar"></div>
+
+<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- ═══════ LOGIN ═══════ -->
 <div id="screen-login">
   <div class="login-card">
     <div class="login-logo">AR</div>
     <div class="login-sub">Panel Administrador</div>
+
     <div class="field">
       <label>Correo electrónico</label>
       <input type="email" id="login-email" placeholder="admin@aromantic.mx" autocomplete="email"/>
@@ -1005,30 +1230,32 @@ tr:hover td { background: rgba(255,255,255,0.013); }
   </div>
 </div>
 
-<!-- ═══ ADMIN ═══ -->
+<!-- ═══════ ADMIN ═══════ -->
 <div id="screen-admin">
   <div class="admin-layout">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR MOBILE OVERLAY -->
     <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
-        <span class="sidebar-logo-text">Aromantic</span>
-        <span class="sidebar-brand-sub">Admin Panel</span>
+        <span class="sidebar-logo">Aromantic</span>
+        <span class="sidebar-brand-sub">Admin Dashboard</span>
       </div>
 
       <nav class="sidebar-nav">
         <div class="nav-group-label">Principal</div>
         <div class="nav-item active" id="nav-dashboard" onclick="goTo('dashboard')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
           </svg>
           Dashboard
         </div>
 
         <div class="nav-group-label">Catálogo</div>
         <div class="nav-item" id="nav-perfumes" onclick="goTo('perfumes')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
             <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
           </svg>
           Perfumes
@@ -1036,28 +1263,31 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 
         <div class="nav-group-label">Próximamente</div>
         <div class="nav-item disabled">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+          <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
           </svg>
           Pedidos
-          <span class="nav-soon">Pronto</span>
+          <span class="nav-badge">Pronto</span>
         </div>
         <div class="nav-item disabled">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
           </svg>
           Clientes
-          <span class="nav-soon">Pronto</span>
+          <span class="nav-badge">Pronto</span>
         </div>
       </nav>
 
       <div class="sidebar-footer">
         <div class="user-row">
           <div class="user-avatar" id="user-avatar">A</div>
-          <div class="user-email" id="user-email-display"></div>
+          <div class="user-info">
+            <div class="user-name" id="user-email-display">—</div>
+            <div class="user-role">Administrador</div>
+          </div>
         </div>
         <button class="btn-logout" onclick="logout()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
           </svg>
           Cerrar sesión
@@ -1065,11 +1295,13 @@ tr:hover td { background: rgba(255,255,255,0.013); }
       </div>
     </aside>
 
-    <!-- MAIN -->
+    <!-- MAIN AREA -->
     <div class="main-area">
+
+      <!-- TOPBAR -->
       <div class="topbar">
-        <button class="hamburger" onclick="openSidebar()">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <button class="hamburger" onclick="openSidebar()" aria-label="Menú">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
@@ -1079,38 +1311,55 @@ tr:hover td { background: rgba(255,255,255,0.013); }
           <span class="breadcrumb-current" id="bc-current">Dashboard</span>
         </div>
         <div class="topbar-right">
-          <span class="status-pill">Admin</span>
+          <span class="status-pill">
+            <span class="status-dot"></span>
+            Admin
+          </span>
         </div>
       </div>
 
       <div class="content">
 
-        <!-- ── VIEW: DASHBOARD ── -->
+        <!-- ──────────────────────────────
+             VIEW: DASHBOARD
+        ────────────────────────────── -->
         <div class="view active" id="view-dashboard">
           <div class="page-header">
-            <div class="page-title">Dashboard</div>
-            <div class="page-subtitle">Resumen del catálogo Aromantic</div>
+            <div class="page-title-group">
+              <div class="page-title">Dashboard</div>
+              <div class="page-subtitle">Resumen general del catálogo Aromantic</div>
+            </div>
+            <button class="btn-add" onclick="goTo('perfumes')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Nuevo perfume
+            </button>
           </div>
 
           <div class="stats-grid">
             <div class="stat-card">
+              <div class="stat-trend">🌿</div>
               <div class="stat-label">Total perfumes</div>
-              <div class="stat-value c-gold" id="stat-total">—</div>
+              <div class="stat-value gold" id="stat-total">—</div>
               <div class="stat-sub">En catálogo</div>
             </div>
             <div class="stat-card">
+              <div class="stat-trend">✓</div>
               <div class="stat-label">Activos</div>
-              <div class="stat-value c-green" id="stat-activos">—</div>
+              <div class="stat-value green" id="stat-activos">—</div>
               <div class="stat-sub">Visibles al público</div>
             </div>
             <div class="stat-card">
+              <div class="stat-trend">○</div>
               <div class="stat-label">Ocultos</div>
-              <div class="stat-value c-red" id="stat-ocultos">—</div>
+              <div class="stat-value red" id="stat-ocultos">—</div>
               <div class="stat-sub">Sin publicar</div>
             </div>
             <div class="stat-card">
+              <div class="stat-trend">◆</div>
               <div class="stat-label">Marcas</div>
-              <div class="stat-value c-white" id="stat-marcas">—</div>
+              <div class="stat-value white" id="stat-marcas">—</div>
               <div class="stat-sub">Marcas distintas</div>
             </div>
           </div>
@@ -1121,26 +1370,68 @@ tr:hover td { background: rgba(255,255,255,0.013); }
               <table>
                 <thead>
                   <tr>
-                    <th></th>
+                    <th style="width:50px"></th>
                     <th>Perfume</th>
                     <th>Género</th>
                     <th>Estado</th>
-                    <th>Acción</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="recent-body">
-                  <tr><td colspan="5"><div class="tbl-empty"><div class="tbl-empty-text">Cargando...</div></div></td></tr>
+                  <tr><td colspan="5">
+                    <div class="tbl-empty">
+                      <div class="tbl-empty-text">Cargando...</div>
+                    </div>
+                  </td></tr>
                 </tbody>
               </table>
             </div>
           </div>
+
+          <!-- Quick stats segunda fila -->
+          <div class="dashboard-grid" style="margin-top:20px;">
+            <div>
+              <div class="section-title" style="margin-top:0">Por género</div>
+              <div class="table-card">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Género</th><th>Total</th><th>Activos</th></tr>
+                    </thead>
+                    <tbody id="stats-genero-body">
+                      <tr><td colspan="3"><div class="tbl-empty"><div class="tbl-empty-text">Cargando...</div></div></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="section-title" style="margin-top:0">Top marcas</div>
+              <div class="table-card">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Marca</th><th>Perfumes</th></tr>
+                    </thead>
+                    <tbody id="stats-marcas-body">
+                      <tr><td colspan="2"><div class="tbl-empty"><div class="tbl-empty-text">Cargando...</div></div></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── VIEW: PERFUMES ── -->
+        <!-- ──────────────────────────────
+             VIEW: PERFUMES
+        ────────────────────────────── -->
         <div class="view" id="view-perfumes">
           <div class="page-header">
-            <div class="page-title">Perfumes</div>
-            <div class="page-subtitle">Gestión completa del catálogo</div>
+            <div class="page-title-group">
+              <div class="page-title">Perfumes</div>
+              <div class="page-subtitle">Gestión completa del catálogo</div>
+            </div>
           </div>
 
           <div class="toolbar">
@@ -1148,21 +1439,27 @@ tr:hover td { background: rgba(255,255,255,0.013); }
               <svg class="search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <input class="search-input" id="search-input" placeholder="Buscar nombre o marca..." oninput="filtrar()"/>
+              <input class="search-input" id="search-input" placeholder="Buscar nombre, marca, familia..." oninput="filtrar()"/>
             </div>
             <select class="filter-sel" id="filter-genero" onchange="filtrar()">
-              <option value="">Todos los géneros</option>
+              <option value="">Género</option>
               <option value="hombre">Hombre</option>
               <option value="mujer">Mujer</option>
               <option value="unisex">Unisex</option>
             </select>
             <select class="filter-sel" id="filter-estado" onchange="filtrar()">
-              <option value="">Todos los estados</option>
+              <option value="">Estado</option>
               <option value="activo">Activos</option>
               <option value="oculto">Ocultos</option>
             </select>
+            <select class="filter-sel" id="filter-temporada" onchange="filtrar()">
+              <option value="">Temporada</option>
+              <option value="frio">Frío ❄️</option>
+              <option value="calor">Calor ☀️</option>
+              <option value="todo el año">Todo el año</option>
+            </select>
             <button class="btn-add" onclick="openDrawer()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                 <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
               Agregar
@@ -1171,13 +1468,17 @@ tr:hover td { background: rgba(255,255,255,0.013); }
 
           <div class="table-card">
             <div class="table-card-header">
-              <span class="table-count" id="table-count">Cargando...</span>
+              <span class="table-count" id="table-count">—</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <span id="filter-indicator" style="font-size:10px;color:var(--gold);display:none;">Filtros activos</span>
+                <button id="btn-clear-filters" onclick="clearFilters()" style="display:none;" class="btn-xs btn-xs-ghost">Limpiar</button>
+              </div>
             </div>
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th></th>
+                    <th style="width:50px"></th>
                     <th>Perfume</th>
                     <th>Género</th>
                     <th>Temporada</th>
@@ -1189,7 +1490,12 @@ tr:hover td { background: rgba(255,255,255,0.013); }
                   </tr>
                 </thead>
                 <tbody id="tabla-body">
-                  <tr><td colspan="9"><div class="tbl-empty"><div class="tbl-empty-icon">🌿</div><div class="tbl-empty-text">Cargando catálogo...</div></div></td></tr>
+                  <tr><td colspan="9">
+                    <div class="tbl-empty">
+                      <div class="tbl-empty-icon">🌿</div>
+                      <div class="tbl-empty-text">Cargando catálogo...</div>
+                    </div>
+                  </td></tr>
                 </tbody>
               </table>
             </div>
@@ -1202,12 +1508,12 @@ tr:hover td { background: rgba(255,255,255,0.013); }
   </div>
 </div><!-- /screen-admin -->
 
-<!-- ═══ DRAWER ═══ -->
+<!-- ═══════ DRAWER ═══════ -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-header">
     <div class="drawer-title" id="drawer-title">Nuevo perfume</div>
-    <button class="drawer-close" onclick="closeDrawer()">
+    <button class="drawer-close" onclick="closeDrawer()" aria-label="Cerrar">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
@@ -1240,7 +1546,7 @@ tr:hover td { background: rgba(255,255,255,0.013); }
       <div class="ff">
         <label>Temporada</label>
         <select id="f-temporada">
-          <option value="todo el año">Todo el año</option>
+          <option value="todo el año">Todo el año ✦</option>
           <option value="frio">Frío ❄️</option>
           <option value="calor">Calor ☀️</option>
         </select>
@@ -1250,7 +1556,7 @@ tr:hover td { background: rgba(255,255,255,0.013); }
     <div class="frow full">
       <div class="ff">
         <label>Familia olfativa</label>
-        <input type="text" id="f-familia" placeholder="Amaderado, Fresco, Oriental..."/>
+        <input type="text" id="f-familia" placeholder="Amaderado, Fresco, Oriental, Cítrico..."/>
       </div>
     </div>
 
@@ -1259,6 +1565,18 @@ tr:hover td { background: rgba(255,255,255,0.013); }
         <label>Descripción</label>
         <textarea id="f-desc" placeholder="Notas principales, carácter del aroma..."></textarea>
       </div>
+    </div>
+
+    <!-- Toggle Activo -->
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Visible en catálogo</div>
+        <div class="toggle-sub">Actívalo para que aparezca en la tienda pública</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="f-activo" checked/>
+        <span class="toggle-slider"></span>
+      </label>
     </div>
 
     <div class="divider"></div>
@@ -1282,14 +1600,22 @@ tr:hover td { background: rgba(255,255,255,0.013); }
     <div class="divider"></div>
     <div class="form-section-lbl">Imagen del producto</div>
 
-    <div class="foto-box">
+    <div class="foto-box" id="foto-drop-zone">
       <div class="foto-ph" id="foto-placeholder">🌿</div>
       <img class="foto-thumb" id="foto-preview" alt="preview" style="display:none"/>
       <div class="foto-side">
-        <p>Imagen cuadrada recomendada.<br/>Mínimo 400×400px · JPG o PNG.</p>
-        <input type="file" id="f-foto" accept="image/*" style="display:none" onchange="previsualizarFoto(this)"/>
+        <p>Cuadrada recomendada · Mín. 400×400px<br/>JPG o PNG · Máx. 5MB</p>
+        <input type="file" id="f-foto" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="previsualizarFoto(this)"/>
         <button class="btn-sm-outline" onclick="document.getElementById('f-foto').click()">Elegir imagen</button>
         <span class="foto-name" id="foto-nombre"></span>
+      </div>
+    </div>
+
+    <!-- URL manual fallback -->
+    <div class="frow full" style="margin-top:-4px;">
+      <div class="ff">
+        <label>O URL de imagen externa</label>
+        <input type="url" id="f-foto-url" placeholder="https://...jpg"/>
       </div>
     </div>
   </div>
@@ -1300,33 +1626,68 @@ tr:hover td { background: rgba(255,255,255,0.013); }
   </div>
 </div>
 
+<!-- ═══════ CONFIRM MODAL ═══════ -->
+<div id="modal-confirm" style="display:none"></div>
+
 <script>
+/* ═══════════════════════════════════════
+   CONFIG SUPABASE
+═══════════════════════════════════════ */
 const SUPABASE_URL = "https://kgrwrordxxuzwuiuwdog.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtncndyb3JkeHh1end1aXV3ZG9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjA1ODQsImV4cCI6MjA5MTU5NjU4NH0.5i8WzMx-CUwSypRZq5V9fQDoc0KnYh-UGKSRcXvhkDs";
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
 let allProducts = [];
 let allPrices   = [];
 let filtered    = [];
-let page = 1;
-const PER_PAGE = 12;
+let page        = 1;
+const PER_PAGE  = 15;
 
-// ── AUTH ──
+/* ═══════════════════════════════════════
+   LOADER BAR
+═══════════════════════════════════════ */
+function loaderStart() {
+  const bar = document.getElementById("loader-bar");
+  bar.style.width = "0%";
+  bar.style.opacity = "1";
+  setTimeout(() => bar.style.width = "60%", 50);
+}
+
+function loaderEnd() {
+  const bar = document.getElementById("loader-bar");
+  bar.style.width = "100%";
+  setTimeout(() => { bar.style.opacity = "0"; bar.style.width = "0%"; }, 400);
+}
+
+/* ═══════════════════════════════════════
+   AUTH
+═══════════════════════════════════════ */
 async function login() {
   const email = document.getElementById("login-email").value.trim();
   const pass  = document.getElementById("login-pass").value;
   const errEl = document.getElementById("login-err");
   const btn   = document.getElementById("btn-login");
+
+  if (!email || !pass) { errEl.textContent = "Completa todos los campos."; return; }
+
   errEl.textContent = "";
   btn.disabled = true;
   btn.textContent = "Verificando...";
 
   const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+
   btn.disabled = false;
   btn.textContent = "Ingresar al panel";
 
-  if (error) { errEl.textContent = "Correo o contraseña incorrectos."; return; }
+  if (error) {
+    errEl.textContent = "Correo o contraseña incorrectos.";
+    return;
+  }
+
   showAdmin(data.user.email);
 }
 
@@ -1334,6 +1695,9 @@ async function logout() {
   await db.auth.signOut();
   document.getElementById("screen-admin").style.display = "none";
   document.getElementById("screen-login").style.display = "flex";
+  allProducts = [];
+  allPrices   = [];
+  filtered    = [];
 }
 
 function showAdmin(email) {
@@ -1344,36 +1708,96 @@ function showAdmin(email) {
   loadData();
 }
 
+// Auto-restore session
 db.auth.getSession().then(({ data }) => {
-  if (data?.session?.user) showAdmin(data.session.user.email);
+  if (data?.session?.user) {
+    showAdmin(data.session.user.email);
+  }
 });
 
-// ── DATA ──
+// Listen for auth changes
+db.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT") {
+    document.getElementById("screen-admin").style.display = "none";
+    document.getElementById("screen-login").style.display = "flex";
+  }
+});
+
+/* ═══════════════════════════════════════
+   DATA LAYER — FIX CRÍTICO
+   Carga SIN filtro activo para que el
+   admin vea todos los productos.
+═══════════════════════════════════════ */
 async function loadData() {
-  const [{ data: perfumes }, { data: precios }] = await Promise.all([
-    db.from("perfumes").select("*").order("created_at", { ascending: false }),
-    db.from("precios").select("*")
-  ]);
-  allProducts = perfumes || [];
-  allPrices   = precios  || [];
-  filtered    = [...allProducts];
-  renderStats();
-  renderRecent();
-  renderTabla();
+  loaderStart();
+
+  try {
+    // CRÍTICO: NO filtrar por activo en admin
+    // El catálogo filtra por activo=true, el admin carga todo
+    const [perfumesRes, preciosRes] = await Promise.all([
+      db.from("perfumes")
+        .select("*")
+        .order("created_at", { ascending: false }),
+      db.from("precios")
+        .select("*")
+        .order("perfume_id")
+    ]);
+
+    // Manejo de errores explícito
+    if (perfumesRes.error) {
+      console.error("[Admin] Error perfumes:", perfumesRes.error);
+      toast(`Error: ${perfumesRes.error.message}`, "error");
+      loaderEnd();
+      return;
+    }
+
+    if (preciosRes.error) {
+      console.warn("[Admin] Error precios:", preciosRes.error.message);
+      // No bloquear si precios falla — continúa con array vacío
+    }
+
+    allProducts = perfumesRes.data ?? [];
+    allPrices   = preciosRes.data ?? [];
+    filtered    = [...allProducts];
+
+    renderStats();
+    renderRecent();
+    renderStatsDetalle();
+    renderTabla();
+
+  } catch (err) {
+    console.error("[Admin] Error inesperado:", err);
+    toast("Error inesperado al cargar datos", "error");
+  }
+
+  loaderEnd();
 }
 
-// ── NAVIGATION ──
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
 function goTo(view) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   document.querySelectorAll(".nav-item:not(.disabled)").forEach(n => n.classList.remove("active"));
   document.getElementById(`view-${view}`).classList.add("active");
   document.getElementById(`nav-${view}`).classList.add("active");
   document.getElementById("bc-current").textContent =
-    view === "dashboard" ? "Dashboard" : "Perfumes";
+    ({ dashboard: "Dashboard", perfumes: "Perfumes" })[view] || view;
   closeSidebar();
+  if (view === "perfumes") openDrawerIfRequested();
 }
 
-// ── SIDEBAR MOBILE ──
+let _pendingEditId = null;
+function openDrawerIfRequested() {
+  if (_pendingEditId) {
+    openDrawer(_pendingEditId);
+    _pendingEditId = null;
+  }
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR MOBILE
+═══════════════════════════════════════ */
 function openSidebar() {
   document.getElementById("sidebar").classList.add("open");
   document.getElementById("sb-overlay").style.display = "block";
@@ -1384,12 +1808,14 @@ function closeSidebar() {
   document.getElementById("sb-overlay").style.display = "none";
 }
 
-// ── STATS ──
+/* ═══════════════════════════════════════
+   STATS DASHBOARD
+═══════════════════════════════════════ */
 function renderStats() {
   const total   = allProducts.length;
   const activos = allProducts.filter(p => p.activo).length;
   const ocultos = total - activos;
-  const marcas  = new Set(allProducts.map(p => p.marca?.toLowerCase()).filter(Boolean)).size;
+  const marcas  = new Set(allProducts.map(p => (p.marca || "").toLowerCase()).filter(Boolean)).size;
 
   document.getElementById("stat-total").textContent   = total;
   document.getElementById("stat-activos").textContent = activos;
@@ -1397,66 +1823,137 @@ function renderStats() {
   document.getElementById("stat-marcas").textContent  = marcas;
 }
 
-// ── RECENT ──
+function renderStatsDetalle() {
+  // Por género
+  const generos = ["hombre", "mujer", "unisex"];
+  const gBody = document.getElementById("stats-genero-body");
+  gBody.innerHTML = generos.map(g => {
+    const total   = allProducts.filter(p => p.genero === g).length;
+    const activos = allProducts.filter(p => p.genero === g && p.activo).length;
+    return `<tr>
+      <td><span class="badge b-gender" style="text-transform:capitalize">${g}</span></td>
+      <td>${total}</td>
+      <td style="color:var(--green)">${activos}</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="3"><div class="tbl-empty"><div class="tbl-empty-text">Sin datos</div></div></td></tr>`;
+
+  // Top marcas
+  const marcaCount = {};
+  allProducts.forEach(p => {
+    if (p.marca) marcaCount[p.marca] = (marcaCount[p.marca] || 0) + 1;
+  });
+  const topMarcas = Object.entries(marcaCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8);
+
+  const mBody = document.getElementById("stats-marcas-body");
+  mBody.innerHTML = topMarcas.map(([marca, count]) =>
+    `<tr>
+      <td style="color:var(--white-70)">${marca}</td>
+      <td><span style="font-family:var(--serif);font-size:16px;color:var(--gold)">${count}</span></td>
+    </tr>`
+  ).join("") || `<tr><td colspan="2"><div class="tbl-empty"><div class="tbl-empty-text">Sin datos</div></div></td></tr>`;
+}
+
+/* ═══════════════════════════════════════
+   RECIENTES (DASHBOARD)
+═══════════════════════════════════════ */
 function renderRecent() {
   const tbody  = document.getElementById("recent-body");
   const recent = allProducts.slice(0, 5);
 
   if (!recent.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="tbl-empty"><div class="tbl-empty-icon">🌿</div><div class="tbl-empty-text">Sin perfumes aún</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="tbl-empty">
+      <div class="tbl-empty-icon">🌿</div>
+      <div class="tbl-empty-text">Sin perfumes aún</div>
+      <div class="tbl-empty-sub">Agrega tu primer perfume</div>
+    </div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = recent.map(p => `
     <tr>
-      <td style="width:52px">${p.foto_url
-        ? `<img src="${p.foto_url}" class="td-foto" alt="">`
-        : `<div class="td-foto-ph">🌿</div>`}</td>
+      <td>${p.foto_url
+        ? `<img src="${p.foto_url}" class="td-foto" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : ""}
+        <div class="td-foto-ph" style="${p.foto_url ? "display:none" : ""}">🌿</div>
+      </td>
       <td>
-        <div class="td-nombre">${p.nombre}</div>
-        <div class="td-marca">${p.marca}</div>
+        <div class="td-nombre">${esc(p.nombre)}</div>
+        <div class="td-marca">${esc(p.marca)}</div>
       </td>
       <td><span class="badge b-gender" style="text-transform:capitalize">${p.genero || "—"}</span></td>
       <td><span class="badge ${p.activo ? "b-active" : "b-hidden"}">${p.activo ? "Activo" : "Oculto"}</span></td>
       <td>
-        <button class="btn-xs btn-xs-gold" onclick="goTo('perfumes');editarProducto('${p.id}')">Editar</button>
+        <button class="btn-xs btn-xs-gold" onclick="verEnPerfumes('${p.id}')">Editar</button>
       </td>
     </tr>
   `).join("");
 }
 
-// ── FILTRAR ──
+function verEnPerfumes(id) {
+  _pendingEditId = id;
+  goTo("perfumes");
+}
+
+/* ═══════════════════════════════════════
+   FILTROS
+═══════════════════════════════════════ */
 function filtrar() {
-  const q      = document.getElementById("search-input").value.toLowerCase();
-  const genero = document.getElementById("filter-genero").value;
-  const estado = document.getElementById("filter-estado").value;
+  const q        = document.getElementById("search-input").value.toLowerCase().trim();
+  const genero   = document.getElementById("filter-genero").value;
+  const estado   = document.getElementById("filter-estado").value;
+  const temporada = document.getElementById("filter-temporada").value;
 
   filtered = allProducts.filter(p => {
-    const mQ = !q || p.nombre?.toLowerCase().includes(q) || p.marca?.toLowerCase().includes(q);
-    const mG = !genero || p.genero === genero;
-    const mE = !estado || (estado === "activo" ? p.activo : !p.activo);
-    return mQ && mG && mE;
+    const mQ = !q || (p.nombre || "").toLowerCase().includes(q)
+                  || (p.marca  || "").toLowerCase().includes(q)
+                  || (p.familia_olfativa || "").toLowerCase().includes(q);
+    const mG = !genero   || p.genero    === genero;
+    const mE = !estado   || (estado === "activo" ? p.activo : !p.activo);
+    const mT = !temporada || p.temporada === temporada;
+    return mQ && mG && mE && mT;
   });
+
+  const hayFiltros = q || genero || estado || temporada;
+  document.getElementById("filter-indicator").style.display = hayFiltros ? "inline" : "none";
+  document.getElementById("btn-clear-filters").style.display = hayFiltros ? "inline-flex" : "none";
 
   page = 1;
   renderTabla();
 }
 
-// ── TABLA ──
-function renderTabla() {
-  const tbody    = document.getElementById("tabla-body");
-  const countEl  = document.getElementById("table-count");
-  const pagEl    = document.getElementById("paginacion");
-  const total    = filtered.length;
-  const totalPages = Math.ceil(total / PER_PAGE);
-  const start    = (page - 1) * PER_PAGE;
-  const slice    = filtered.slice(start, start + PER_PAGE);
+function clearFilters() {
+  document.getElementById("search-input").value = "";
+  document.getElementById("filter-genero").value = "";
+  document.getElementById("filter-estado").value = "";
+  document.getElementById("filter-temporada").value = "";
+  filtrar();
+}
 
-  countEl.textContent = `${total} perfume${total !== 1 ? "s" : ""}`;
+/* ═══════════════════════════════════════
+   TABLA PRINCIPAL
+═══════════════════════════════════════ */
+function renderTabla() {
+  const tbody      = document.getElementById("tabla-body");
+  const countEl    = document.getElementById("table-count");
+  const total      = filtered.length;
+  const totalPages = Math.ceil(total / PER_PAGE) || 1;
+  const start      = (page - 1) * PER_PAGE;
+  const slice      = filtered.slice(start, start + PER_PAGE);
+
+  const allTotal = allProducts.length;
+  countEl.textContent = total === allTotal
+    ? `${total} perfume${total !== 1 ? "s" : ""}`
+    : `${total} de ${allTotal} perfume${allTotal !== 1 ? "s" : ""}`;
 
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="tbl-empty"><div class="tbl-empty-icon">🔍</div><div class="tbl-empty-text">Sin resultados</div><div class="tbl-empty-sub">Intenta con otro filtro</div></div></td></tr>`;
-    pagEl.style.display = "none";
+    tbody.innerHTML = `<tr><td colspan="9"><div class="tbl-empty">
+      <div class="tbl-empty-icon">🔍</div>
+      <div class="tbl-empty-text">Sin resultados</div>
+      <div class="tbl-empty-sub">Prueba con otros filtros</div>
+    </div></td></tr>`;
+    document.getElementById("paginacion").style.display = "none";
     return;
   }
 
@@ -1464,36 +1961,41 @@ function renderTabla() {
     ? `<span class="precio">$${parseFloat(px.precio).toFixed(0)}</span>`
     : `<span class="precio-na">—</span>`;
 
+  const tempMap = { frio: "❄️", calor: "☀️", "todo el año": "✦" };
+
   tbody.innerHTML = slice.map(p => {
     const pp  = allPrices.filter(pr => pr.perfume_id === p.id);
     const p3  = pp.find(pr => pr.tamano === "3ml");
     const p5  = pp.find(pr => pr.tamano === "5ml");
     const p10 = pp.find(pr => pr.tamano === "10ml");
-    const tempIcon = p.temporada === "frio" ? "❄️" : p.temporada === "calor" ? "☀️" : "✦";
+    const tempIcon = tempMap[p.temporada] || "✦";
 
-    return `
-      <tr>
-        <td style="width:52px">${p.foto_url
-          ? `<img src="${p.foto_url}" class="td-foto" alt="">`
-          : `<div class="td-foto-ph">🌿</div>`}</td>
-        <td>
-          <div class="td-nombre">${p.nombre}</div>
-          <div class="td-marca">${p.marca}</div>
-        </td>
-        <td><span class="badge b-gender" style="text-transform:capitalize">${p.genero || "—"}</span></td>
-        <td style="font-size:12px;color:rgba(255,255,255,0.42)">${tempIcon} ${p.temporada || "—"}</td>
-        <td>${fmt(p3)}</td>
-        <td>${fmt(p5)}</td>
-        <td>${fmt(p10)}</td>
-        <td><span class="badge ${p.activo ? "b-active" : "b-hidden"}">${p.activo ? "Activo" : "Oculto"}</span></td>
-        <td>
-          <div class="row-actions">
-            <button class="btn-xs btn-xs-gold"  onclick="editarProducto('${p.id}')">Editar</button>
-            <button class="btn-xs btn-xs-ghost" onclick="toggleActivo('${p.id}', ${p.activo})">${p.activo ? "Ocultar" : "Activar"}</button>
-          </div>
-        </td>
-      </tr>
-    `;
+    return `<tr>
+      <td>
+        ${p.foto_url
+          ? `<img src="${p.foto_url}" class="td-foto" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="td-foto-ph" style="display:none">🌿</div>`
+          : `<div class="td-foto-ph">🌿</div>`}
+      </td>
+      <td>
+        <div class="td-nombre">${esc(p.nombre)}</div>
+        <div class="td-marca">${esc(p.marca)}</div>
+      </td>
+      <td><span class="badge b-gender" style="text-transform:capitalize">${p.genero || "—"}</span></td>
+      <td style="font-size:11.5px;color:var(--white-40)">${tempIcon} <span style="margin-left:4px">${p.temporada || "—"}</span></td>
+      <td>${fmt(p3)}</td>
+      <td>${fmt(p5)}</td>
+      <td>${fmt(p10)}</td>
+      <td><span class="badge ${p.activo ? "b-active" : "b-hidden"}">${p.activo ? "Activo" : "Oculto"}</span></td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-xs btn-xs-gold"  onclick="openDrawer('${p.id}')">Editar</button>
+          <button class="btn-xs ${p.activo ? "btn-xs-ghost" : "btn-xs-green"}"
+                  onclick="toggleActivo('${p.id}', ${p.activo})">
+            ${p.activo ? "Ocultar" : "Activar"}
+          </button>
+        </div>
+      </td>
+    </tr>`;
   }).join("");
 
   renderPaginacion(total, totalPages, start);
@@ -1504,13 +2006,13 @@ function renderPaginacion(total, totalPages, start) {
   if (totalPages <= 1) { el.style.display = "none"; return; }
   el.style.display = "flex";
 
-  const end   = Math.min(start + PER_PAGE, total);
-  let pages   = "";
-  const maxVis = 5;
-  let from = Math.max(1, page - 2);
-  let to   = Math.min(totalPages, from + maxVis - 1);
-  from = Math.max(1, to - maxVis + 1);
+  const end  = Math.min(start + PER_PAGE, total);
+  const maxV = 5;
+  let from   = Math.max(1, page - 2);
+  let to     = Math.min(totalPages, from + maxV - 1);
+  from       = Math.max(1, to - maxV + 1);
 
+  let pages = "";
   for (let i = from; i <= to; i++) {
     pages += `<button class="page-btn${i === page ? " active" : ""}" onclick="goPage(${i})">${i}</button>`;
   }
@@ -1518,37 +2020,43 @@ function renderPaginacion(total, totalPages, start) {
   el.innerHTML = `
     <span class="page-info">${start + 1}–${end} de ${total}</span>
     <div class="page-btns">
-      <button class="page-btn" onclick="goPage(${page - 1})" ${page === 1 ? "disabled" : ""}>‹</button>
+      <button class="page-btn" onclick="goPage(1)" ${page === 1 ? "disabled" : ""} title="Primera">«</button>
+      <button class="page-btn" onclick="goPage(${page-1})" ${page === 1 ? "disabled" : ""}>‹</button>
       ${pages}
-      <button class="page-btn" onclick="goPage(${page + 1})" ${page === totalPages ? "disabled" : ""}>›</button>
+      <button class="page-btn" onclick="goPage(${page+1})" ${page === totalPages ? "disabled" : ""}>›</button>
+      <button class="page-btn" onclick="goPage(${totalPages})" ${page === totalPages ? "disabled" : ""} title="Última">»</button>
     </div>
   `;
 }
 
-function goPage(p) {
-  page = p;
-  renderTabla();
-}
+function goPage(p) { page = p; renderTabla(); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
-// ── DRAWER ──
+/* ═══════════════════════════════════════
+   DRAWER
+═══════════════════════════════════════ */
 function openDrawer(id = null) {
-  limpiarForm();
+  resetForm();
   document.getElementById("drawer-title").textContent = id ? "Editar perfume" : "Nuevo perfume";
 
   if (id) {
     const p   = allProducts.find(x => x.id === id);
+    if (!p) { toast("Perfume no encontrado", "error"); return; }
+
     const pp  = allPrices.filter(pr => pr.perfume_id === id);
     const p3  = pp.find(pr => pr.tamano === "3ml");
     const p5  = pp.find(pr => pr.tamano === "5ml");
     const p10 = pp.find(pr => pr.tamano === "10ml");
 
     document.getElementById("f-id").value        = p.id;
-    document.getElementById("f-marca").value     = p.marca || "";
-    document.getElementById("f-nombre").value    = p.nombre || "";
+    document.getElementById("f-marca").value     = p.marca        || "";
+    document.getElementById("f-nombre").value    = p.nombre       || "";
     document.getElementById("f-familia").value   = p.familia_olfativa || "";
-    document.getElementById("f-genero").value    = p.genero || "hombre";
-    document.getElementById("f-temporada").value = p.temporada || "todo el año";
-    document.getElementById("f-desc").value      = p.descripcion || "";
+    document.getElementById("f-genero").value    = p.genero       || "hombre";
+    document.getElementById("f-temporada").value = p.temporada    || "todo el año";
+    document.getElementById("f-desc").value      = p.descripcion  || "";
+    document.getElementById("f-activo").checked  = p.activo !== false;
+    document.getElementById("f-foto-url").value  = p.foto_url     || "";
+
     if (p3)  document.getElementById("f-precio-3").value  = p3.precio;
     if (p5)  document.getElementById("f-precio-5").value  = p5.precio;
     if (p10) document.getElementById("f-precio-10").value = p10.precio;
@@ -1563,29 +2071,41 @@ function openDrawer(id = null) {
 
   document.getElementById("drawer").classList.add("open");
   document.getElementById("drawer-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  // Focus primer campo
+  setTimeout(() => document.getElementById("f-marca").focus(), 320);
 }
 
 function closeDrawer() {
   document.getElementById("drawer").classList.remove("open");
   document.getElementById("drawer-overlay").classList.remove("open");
+  document.body.style.overflow = "";
 }
 
-function editarProducto(id) { openDrawer(id); }
-
-function limpiarForm() {
-  ["f-id","f-marca","f-nombre","f-familia","f-desc","f-precio-3","f-precio-5","f-precio-10"]
-    .forEach(i => { document.getElementById(i).value = ""; });
+function resetForm() {
+  const ids = ["f-id","f-marca","f-nombre","f-familia","f-desc","f-precio-3","f-precio-5","f-precio-10","f-foto-url"];
+  ids.forEach(i => { document.getElementById(i).value = ""; });
   document.getElementById("f-genero").value    = "hombre";
   document.getElementById("f-temporada").value = "todo el año";
+  document.getElementById("f-activo").checked  = true;
   document.getElementById("foto-placeholder").style.display = "flex";
   document.getElementById("foto-preview").style.display     = "none";
   document.getElementById("foto-nombre").textContent        = "";
   document.getElementById("f-foto").value                   = "";
 }
 
+/* FOTO PREVIEW */
 function previsualizarFoto(input) {
   const file = input.files[0];
   if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    toast("La imagen supera 5MB", "error");
+    input.value = "";
+    return;
+  }
+
   document.getElementById("foto-nombre").textContent = file.name;
   const reader = new FileReader();
   reader.onload = e => {
@@ -1597,89 +2117,186 @@ function previsualizarFoto(input) {
   reader.readAsDataURL(file);
 }
 
-// ── GUARDAR ──
+/* ═══════════════════════════════════════
+   GUARDAR (CREATE / UPDATE)
+═══════════════════════════════════════ */
 async function guardar() {
   const id     = document.getElementById("f-id").value;
   const marca  = document.getElementById("f-marca").value.trim();
   const nombre = document.getElementById("f-nombre").value.trim();
 
-  if (!marca || !nombre) { toast("Marca y nombre son obligatorios", "error"); return; }
+  if (!marca || !nombre) {
+    toast("Marca y nombre son obligatorios", "error");
+    if (!marca) document.getElementById("f-marca").focus();
+    else document.getElementById("f-nombre").focus();
+    return;
+  }
 
   const btn = document.getElementById("btn-save");
   btn.disabled = true;
   btn.textContent = "Guardando...";
+  loaderStart();
 
-  let foto_url = null;
-  const fotoFile = document.getElementById("f-foto").files[0];
+  try {
+    let foto_url = document.getElementById("f-foto-url").value.trim() || null;
 
-  if (fotoFile) {
-    const ext  = fotoFile.name.split(".").pop();
-    const path = `${Date.now()}.${ext}`;
-    const { error: uploadError } = await db.storage
-      .from("fotos-perfumes").upload(path, fotoFile, { upsert: true });
-    if (!uploadError) {
-      const { data: urlData } = db.storage.from("fotos-perfumes").getPublicUrl(path);
-      foto_url = urlData.publicUrl;
+    // Upload nueva imagen si hay archivo
+    const fotoFile = document.getElementById("f-foto").files[0];
+    if (fotoFile) {
+      const ext  = fotoFile.name.split(".").pop().toLowerCase();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+      const { error: uploadErr } = await db.storage
+        .from("fotos-perfumes")
+        .upload(path, fotoFile, { upsert: true, contentType: fotoFile.type });
+
+      if (uploadErr) {
+        console.warn("Upload error:", uploadErr.message);
+        toast("No se pudo subir la imagen: " + uploadErr.message, "error");
+      } else {
+        const { data: urlData } = db.storage.from("fotos-perfumes").getPublicUrl(path);
+        foto_url = urlData.publicUrl;
+      }
     }
-  }
 
-  const datos = {
-    marca,
-    nombre,
-    familia_olfativa: document.getElementById("f-familia").value.trim() || null,
-    genero:           document.getElementById("f-genero").value,
-    temporada:        document.getElementById("f-temporada").value,
-    descripcion:      document.getElementById("f-desc").value.trim() || null,
-  };
+    // Si no hay archivo nuevo pero hay foto_url en el perfume existente, mantenerla
+    if (!foto_url && id) {
+      const existing = allProducts.find(p => p.id === id);
+      if (existing?.foto_url && !document.getElementById("f-foto-url").value.trim()) {
+        foto_url = existing.foto_url;
+      }
+    }
 
-  if (foto_url) datos.foto_url = foto_url;
+    const datos = {
+      marca,
+      nombre,
+      familia_olfativa: document.getElementById("f-familia").value.trim() || null,
+      genero:           document.getElementById("f-genero").value,
+      temporada:        document.getElementById("f-temporada").value,
+      descripcion:      document.getElementById("f-desc").value.trim() || null,
+      activo:           document.getElementById("f-activo").checked,
+      foto_url:         foto_url,
+    };
 
-  let perfumeId = id;
+    let perfumeId = id;
 
-  if (id) {
-    await db.from("perfumes").update(datos).eq("id", id);
-  } else {
-    const { data } = await db.from("perfumes").insert({ ...datos, activo: true }).select().single();
-    perfumeId = data.id;
-  }
-
-  const tamanos = [
-    { tamano: "3ml",  val: document.getElementById("f-precio-3").value },
-    { tamano: "5ml",  val: document.getElementById("f-precio-5").value },
-    { tamano: "10ml", val: document.getElementById("f-precio-10").value },
-  ];
-
-  for (const t of tamanos) {
-    if (!t.val) continue;
-    const existe = allPrices.find(p => p.perfume_id === perfumeId && p.tamano === t.tamano);
-    if (existe) {
-      await db.from("precios").update({ precio: parseFloat(t.val) }).eq("id", existe.id);
+    if (id) {
+      const { error } = await db.from("perfumes").update(datos).eq("id", id);
+      if (error) throw error;
     } else {
-      await db.from("precios").insert({ perfume_id: perfumeId, tamano: t.tamano, precio: parseFloat(t.val), disponible: true });
+      const { data, error } = await db.from("perfumes").insert(datos).select().single();
+      if (error) throw error;
+      perfumeId = data.id;
     }
+
+    // Upsert precios
+    const tamanos = [
+      { tamano: "3ml",  val: document.getElementById("f-precio-3").value },
+      { tamano: "5ml",  val: document.getElementById("f-precio-5").value },
+      { tamano: "10ml", val: document.getElementById("f-precio-10").value },
+    ];
+
+    for (const t of tamanos) {
+      if (!t.val && t.val !== 0) continue;
+      const precio = parseFloat(t.val);
+      if (isNaN(precio)) continue;
+
+      const existe = allPrices.find(p => p.perfume_id === perfumeId && p.tamano === t.tamano);
+      if (existe) {
+        await db.from("precios").update({ precio, disponible: true }).eq("id", existe.id);
+      } else {
+        await db.from("precios").insert({ perfume_id: perfumeId, tamano: t.tamano, precio, disponible: true });
+      }
+    }
+
+    toast(id ? "Perfume actualizado" : "Perfume creado", "ok");
+    closeDrawer();
+    await loadData();
+
+  } catch (err) {
+    console.error("[Admin] Error guardar:", err);
+    toast("Error al guardar: " + (err.message || "desconocido"), "error");
   }
 
   btn.disabled = false;
   btn.textContent = "Guardar perfume";
-  toast("Perfume guardado correctamente", "ok");
-  closeDrawer();
-  await loadData();
+  loaderEnd();
 }
 
-// ── TOGGLE ACTIVO ──
+/* ═══════════════════════════════════════
+   TOGGLE ACTIVO
+═══════════════════════════════════════ */
 async function toggleActivo(id, activo) {
-  await db.from("perfumes").update({ activo: !activo }).eq("id", id);
-  toast(!activo ? "Perfume activado" : "Perfume ocultado", "ok");
+  loaderStart();
+  const { error } = await db.from("perfumes").update({ activo: !activo }).eq("id", id);
+  loaderEnd();
+  if (error) { toast("Error: " + error.message, "error"); return; }
+  toast(!activo ? "Perfume activado ✓" : "Perfume ocultado", "ok");
   await loadData();
 }
 
-// ── TOAST ──
+/* ═══════════════════════════════════════
+   MODAL CONFIRM (genérico)
+═══════════════════════════════════════ */
+function showConfirm({ icon = "⚠️", title, msg, confirmLabel = "Confirmar", confirmClass = "btn-xs-gold", onConfirm }) {
+  const overlay = document.getElementById("modal-confirm");
+  overlay.style.display = "flex";
+  overlay.className = "modal-overlay";
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-icon">${icon}</div>
+      <div class="modal-title">${title}</div>
+      <div class="modal-msg">${msg}</div>
+      <div class="modal-actions">
+        <button class="btn-xs btn-xs-ghost" onclick="closeConfirm()">Cancelar</button>
+        <button class="btn-xs ${confirmClass}" onclick="closeConfirm();(${onConfirm.toString()})()">
+          ${confirmLabel}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function closeConfirm() {
+  const overlay = document.getElementById("modal-confirm");
+  overlay.style.display = "none";
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+let _toastTimer = null;
+
 function toast(msg, tipo = "") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className   = tipo ? `show ${tipo}` : "show";
-  setTimeout(() => { t.className = tipo || ""; }, 3200);
+  const icons = { ok: "✓", error: "✕" };
+  t.innerHTML = `${icons[tipo] ? `<span>${icons[tipo]}</span>` : ""}${msg}`;
+  t.className = tipo ? `show ${tipo}` : "show";
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.className = ""; }, 3500);
 }
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function esc(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/* ═══════════════════════════════════════
+   KEYBOARD SHORTCUTS
+═══════════════════════════════════════ */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (document.getElementById("modal-confirm").style.display === "flex") { closeConfirm(); return; }
+    if (document.getElementById("drawer").classList.contains("open")) { closeDrawer(); return; }
+  }
+});
 </script>
 </body>
 </html>
