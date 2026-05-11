@@ -1480,6 +1480,7 @@ tr:hover td { background: var(--white-02); }
                   <tr>
                     <th style="width:50px"></th>
                     <th>Perfume</th>
+                    <th>Inspirado en</th>
                     <th>Género</th>
                     <th>Temporada</th>
                     <th>3 ml</th>
@@ -1490,7 +1491,7 @@ tr:hover td { background: var(--white-02); }
                   </tr>
                 </thead>
                 <tbody id="tabla-body">
-                  <tr><td colspan="9">
+                  <tr><td colspan="10">
                     <div class="tbl-empty">
                       <div class="tbl-empty-icon">🌿</div>
                       <div class="tbl-empty-text">Cargando catálogo...</div>
@@ -1550,6 +1551,13 @@ tr:hover td { background: var(--white-02); }
           <option value="frio">Frío ❄️</option>
           <option value="calor">Calor ☀️</option>
         </select>
+      </div>
+    </div>
+
+    <div class="frow full">
+      <div class="ff">
+        <label>Inspirado en</label>
+        <input type="text" id="f-inspirado" placeholder="Ej: Sauvage de Dior, Bleu de Chanel..."/>
       </div>
     </div>
 
@@ -1948,7 +1956,7 @@ function renderTabla() {
     : `${total} de ${allTotal} perfume${allTotal !== 1 ? "s" : ""}`;
 
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="tbl-empty">
+    tbody.innerHTML = `<tr><td colspan="10"><div class="tbl-empty">
       <div class="tbl-empty-icon">🔍</div>
       <div class="tbl-empty-text">Sin resultados</div>
       <div class="tbl-empty-sub">Prueba con otros filtros</div>
@@ -1980,6 +1988,7 @@ function renderTabla() {
         <div class="td-nombre">${esc(p.nombre)}</div>
         <div class="td-marca">${esc(p.marca)}</div>
       </td>
+      <td style="font-size:11px;color:var(--white-30);font-style:italic;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.inspirado_en ? esc(p.inspirado_en) : '<span style="opacity:0.25">—</span>'}</td>
       <td><span class="badge b-gender" style="text-transform:capitalize">${p.genero || "—"}</span></td>
       <td style="font-size:11.5px;color:var(--white-40)">${tempIcon} <span style="margin-left:4px">${p.temporada || "—"}</span></td>
       <td>${fmt(p3)}</td>
@@ -2050,6 +2059,7 @@ function openDrawer(id = null) {
     document.getElementById("f-id").value        = p.id;
     document.getElementById("f-marca").value     = p.marca        || "";
     document.getElementById("f-nombre").value    = p.nombre       || "";
+    document.getElementById("f-inspirado").value = p.inspirado_en || "";
     document.getElementById("f-familia").value   = p.familia_olfativa || "";
     document.getElementById("f-genero").value    = p.genero       || "hombre";
     document.getElementById("f-temporada").value = p.temporada    || "todo el año";
@@ -2084,7 +2094,7 @@ function closeDrawer() {
 }
 
 function resetForm() {
-  const ids = ["f-id","f-marca","f-nombre","f-familia","f-desc","f-precio-3","f-precio-5","f-precio-10","f-foto-url"];
+  const ids = ["f-id","f-marca","f-nombre","f-familia","f-desc","f-precio-3","f-precio-5","f-precio-10","f-foto-url","f-inspirado"];
   ids.forEach(i => { document.getElementById(i).value = ""; });
   document.getElementById("f-genero").value    = "hombre";
   document.getElementById("f-temporada").value = "todo el año";
@@ -2170,6 +2180,7 @@ async function guardar() {
     const datos = {
       marca,
       nombre,
+      inspirado_en:     document.getElementById("f-inspirado").value.trim() || null,
       familia_olfativa: document.getElementById("f-familia").value.trim() || null,
       genero:           document.getElementById("f-genero").value,
       temporada:        document.getElementById("f-temporada").value,
